@@ -150,7 +150,9 @@
             <h1 class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white leading-none">
               Country Stat Battles
             </h1>
-            <p class="text-[11px] text-slate-400 font-medium hidden sm:block">The Higher or Lower Geography Challenge</p>
+            <p class="text-[11px] text-slate-400 font-medium hidden sm:block tracking-wide">
+              Higher or Lower Country Stats
+            </p>
           </div>
         </div>
 
@@ -262,7 +264,7 @@
             <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
             <div class="flex flex-col items-center text-center">
               <!-- Country Map Shape (Top & Bigger) -->
-              <div class="w-full max-w-[240px] h-32 sm:h-36 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+              <div class="w-full max-w-[270px] sm:max-w-[300px] h-36 sm:h-44 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
                 <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#34d399_1px,transparent_1px)] [background-size:10px_10px]"></div>
                 <img
                   id="shape-a"
@@ -279,7 +281,7 @@
                   id="flag-a"
                   src="https://flagcdn.com/w160/jp.png"
                   alt="Japan Flag"
-                  class="w-14 sm:w-16 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  class="w-16 sm:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
                   referrerpolicy="no-referrer"
                 />
               </div>
@@ -288,13 +290,10 @@
               <h2 id="name-a" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
                 Japan
               </h2>
-              <p id="label-has-a" class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">
-                Has
-              </p>
             </div>
 
             <!-- Revealed Stat Box -->
-            <div class="my-6 text-center">
+            <div class="mt-4 mb-6 text-center">
               <div
                 id="value-a"
                 class="tabular-nums font-display text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight"
@@ -327,7 +326,7 @@
             <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
             <div class="flex flex-col items-center text-center">
               <!-- Country Map Shape (Top & Bigger) -->
-              <div class="w-full max-w-[240px] h-32 sm:h-36 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+              <div class="w-full max-w-[270px] sm:max-w-[300px] h-36 sm:h-44 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
                 <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:10px_10px]"></div>
                 <img
                   id="shape-b"
@@ -344,7 +343,7 @@
                   id="flag-b"
                   src="https://flagcdn.com/w160/fi.png"
                   alt="Finland Flag"
-                  class="w-14 sm:w-16 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  class="w-16 sm:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
                   referrerpolicy="no-referrer"
                 />
               </div>
@@ -353,9 +352,6 @@
               <h2 id="name-b" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
                 Finland
               </h2>
-              <p id="label-has-b" class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">
-                Has
-              </p>
             </div>
 
             <!-- Hidden / Counted Stat Box -->
@@ -395,27 +391,6 @@
               <span>Than <span id="comparison-country-name" class="font-bold text-slate-200">Japan</span>?</span>
               <span class="hidden sm:inline text-slate-600">|</span>
               <span class="hidden sm:inline text-slate-500 text-[11px]">Use [▲ / ▼] keys</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Ad Placeholder Container (Main Game Area Bottom) -->
-        <div class="w-full mt-6 max-w-3xl">
-          <div class="p-3 bg-slate-900/60 rounded-xl border border-dashed border-slate-800 text-center">
-            <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1.5">
-              Advertisement
-            </div>
-            <!-- Google AdSense Container -->
-            <div class="h-16 sm:h-20 w-full flex items-center justify-center bg-slate-800/40 rounded-lg text-xs text-slate-400">
-              <ins
-                class="adsbygoogle"
-                style="display: block; width: 100%"
-                data-ad-client="ca-pub-0000000000000000"
-                data-ad-slot="1234567890"
-                data-ad-format="horizontal"
-                data-full-width-responsive="true"
-              ></ins>
-              <span class="italic text-slate-500">Sponsored Ad Unit · ca-pub-0000000000000000</span>
             </div>
           </div>
         </div>
@@ -598,8 +573,7 @@
 
     <!-- Footer -->
     <footer class="w-full py-4 border-t border-slate-800/80 bg-slate-900/50 text-center text-xs text-slate-500">
-      <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-        <span>Country Stat Battles · Compare geography, mountain peaks, culture & global stats</span>
+      <div class="max-w-5xl mx-auto px-4 flex items-center justify-center">
         <span>Real-world data sourced from UN, World Bank, UNESCO, Ookla & Olympic Records</span>
       </div>
     </footer>
