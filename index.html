@@ -45,6 +45,17 @@
       crossorigin="anonymous"
     ></script>
 
+    <!-- Vercel Web Analytics -->
+    <script>
+      window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+      (function () {
+        var s = document.createElement("script");
+        s.defer = true;
+        s.src = "/_vercel/insights/script.js";
+        document.head.appendChild(s);
+      })();
+    </script>
+
     <!-- Canvas Confetti CDN for Particle Blasts -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
 
@@ -1022,6 +1033,17 @@
       highEl.textContent = highScore;
 
       /**
+       * Vercel Analytics Custom Event Tracker
+       */
+      function trackEvent(name, data = {}) {
+        if (typeof window.va === "function") {
+          try {
+            window.va("event", { name, ...data });
+          } catch (e) {}
+        }
+      }
+
+      /**
        * Visual Juice: Confetti & Particle Blast
        * Fires celebratory particle bursts on high achievement (8/10+ in Daily, or high score in Endless)
        */
@@ -1490,6 +1512,8 @@
         // Animated counter roll-up for the final streak
         animateCounter(finalStreakEl, streak, 650, () => sfx.tick());
 
+        trackEvent("endless_game_over", { streak, highScore });
+
         const valA = countryA[currentCategoryKey];
         const valB = countryB[currentCategoryKey];
         gameOverMsg.textContent = `${countryB.name} has ${activeCategory.format(valB)}, while ${countryA.name} has ${activeCategory.format(valA)}.`;
@@ -1518,6 +1542,7 @@
       }
 
       function shareResult() {
+        trackEvent("share_result", { mode: "endless", streak });
         const blocks = roundHistory.map(res => res === "correct" ? "🟩" : "🟥").join("");
         const text = `🌍 Country Stat Battles | I reached a streak of ${streak}! (Best: ${highScore})\n${blocks}\nCan you beat my score? ${window.location.href}`;
 
@@ -1804,6 +1829,7 @@
           dailyHeaderLabel.textContent = `Score: ${currentScore}/10`;
         }, () => {
           dailyHeaderLabel.textContent = `Score: ${score}/10`;
+          trackEvent("daily_completed", { score, challengeNum });
 
           if (score === 10) {
             dailyRankFeedback.textContent = "🏆 Master of World Geography! Perfect 10 / 10!";
@@ -1831,6 +1857,7 @@
         const challengeNum = getDailyChallengeNumber();
         const dateFormatted = new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
         const score = dailyFinalScore.textContent;
+        trackEvent("share_result", { mode: "daily", score });
         const gridStr = dailyGridEmoji.textContent.trim();
         const text = `🌍 Country Stat Battles | Daily #${challengeNum} (${dateFormatted})\nScore: ${score} / 10\n${gridStr}\nCan you beat my score? ${window.location.href}`;
 
