@@ -1,0 +1,8 @@
+{
+  "name": "Country Stat Battles",
+  "description": "A higher or lower guessing game where players compare real-world country statistics including population density and coffee consumption.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

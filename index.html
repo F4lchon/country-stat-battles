@@ -1,0 +1,1967 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Country Stat Battles – Higher or Lower World Stats Game</title>
+    <meta
+      name="description"
+      content="Test your geography knowledge in Country Stat Battles! Guess whether countries have higher or lower population density, coffee consumption, and more."
+    />
+    <meta property="og:title" content="Country Stat Battles – Higher or Lower World Stats Game" />
+    <meta
+      property="og:description"
+      content="A Higher/Lower guessing game comparing real-world statistics between countries. Can you build an unbeatable streak?"
+    />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Country Stat Battles" />
+    <meta
+      name="twitter:description"
+      content="Test your geography knowledge! Guess whether countries have higher or lower statistics."
+    />
+
+    <!-- Schema.org WebApplication JSON-LD -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Country Stat Battles",
+        "applicationCategory": "GameApplication",
+        "operatingSystem": "All",
+        "description": "A higher or lower guessing game comparing real-world country statistics including population density and coffee consumption.",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      }
+    </script>
+
+    <!-- Google AdSense Initialization Placeholder -->
+    <script
+      async
+      src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Canvas Confetti CDN for Particle Blasts -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.4/dist/confetti.browser.min.js"></script>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: {
+                50: '#f0fdf4',
+                500: '#10b981',
+                600: '#059669',
+                700: '#047857',
+              },
+            },
+            keyframes: {
+              shake: {
+                '0%, 100%': { transform: 'translateX(0)' },
+                '20%, 60%': { transform: 'translateX(-6px)' },
+                '40%, 80%': { transform: 'translateX(6px)' },
+              },
+              pop: {
+                '0%': { transform: 'scale(0.96)', opacity: '0.8' },
+                '50%': { transform: 'scale(1.04)' },
+                '100%': { transform: 'scale(1)', opacity: '1' },
+              },
+              pulseGlow: {
+                '0%, 100%': { opacity: '0.6' },
+                '50%': { opacity: '1' },
+              },
+            },
+            animation: {
+              shake: 'shake 0.45s ease-in-out',
+              pop: 'pop 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
+              pulseGlow: 'pulseGlow 2s infinite',
+            },
+          },
+        },
+      };
+    </script>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@700;800;900&display=swap');
+
+      body {
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        background-color: #0b1120;
+        color: #f8fafc;
+      }
+
+      .font-display {
+        font-family: 'Cabinet Grotesk', system-ui, sans-serif;
+      }
+
+      /* Card reflection highlight */
+      .card-gloss {
+        background: radial-gradient(120% 120% at 50% 0%, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 60%, rgba(0, 0, 0, 0.4) 100%);
+      }
+
+      .flag-shadow {
+        box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5), 0 2px 6px -1px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Tabular figures for score & numbers */
+      .tabular-nums {
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* Scrollbar polish */
+      ::-webkit-scrollbar {
+        width: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #0f172a;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #334155;
+        border-radius: 3px;
+      }
+    </style>
+  </head>
+  <body class="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-white">
+    <!-- Header -->
+    <header class="w-full border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-30">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+        <!-- Brand -->
+        <div class="flex items-center gap-2.5">
+          <span class="text-2xl" aria-hidden="true">🌍</span>
+          <div>
+            <h1 class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white leading-none">
+              Country Stat Battles
+            </h1>
+            <p class="text-[11px] text-slate-400 font-medium hidden sm:block">The Higher or Lower Geography Challenge</p>
+          </div>
+        </div>
+
+        <!-- Mode Switcher Tabs -->
+        <div class="flex items-center p-1 bg-slate-800/90 border border-slate-700/80 rounded-xl shadow-inner">
+          <button
+            id="tab-endless"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-emerald-600 text-white shadow"
+          >
+            <span>🔥</span>
+            <span>Streak</span>
+          </button>
+          <button
+            id="tab-daily"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200"
+          >
+            <span>🗓️</span>
+            <span>Daily 10</span>
+          </button>
+        </div>
+
+        <!-- Scores and Controls -->
+        <div class="flex items-center gap-2.5 sm:gap-4">
+          <!-- Endless Mode Stats (Hidden when in Daily Mode) -->
+          <div id="endless-stats-group" class="flex items-center gap-2 sm:gap-3">
+            <div class="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-lg shadow-inner">
+              <span class="text-xs text-slate-400 font-medium">Streak:</span>
+              <span id="streak-score" class="tabular-nums font-bold text-emerald-400 text-base">0</span>
+              <span id="fire-icon" class="text-sm opacity-40 transition-opacity">🔥</span>
+            </div>
+
+            <div class="hidden sm:flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+              <span class="text-xs text-slate-400 font-medium">Best:</span>
+              <span id="high-score" class="tabular-nums font-bold text-amber-300 text-base">0</span>
+              <span class="text-xs text-amber-400">🏆</span>
+            </div>
+          </div>
+
+          <!-- Daily Mode Status Indicator (Hidden when in Endless Mode) -->
+          <div id="daily-stats-group" class="hidden items-center gap-2">
+            <div class="flex items-center gap-1.5 bg-sky-950/80 border border-sky-800/80 px-3 py-1.5 rounded-lg">
+              <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
+              <span id="daily-header-label" class="text-xs font-bold text-sky-200 font-mono">Round 1/10</span>
+            </div>
+          </div>
+
+          <!-- Sound Toggle -->
+          <button
+            id="sound-toggle-btn"
+            class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+            title="Toggle Sound Effects"
+            aria-label="Toggle Sound Effects"
+          >
+            <svg id="sound-icon-on" class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+            <svg id="sound-icon-off" class="w-4 h-4 text-slate-500 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 w-full max-w-5xl mx-auto">
+      <!-- Active Battle View -->
+      <div id="game-view" class="w-full flex flex-col items-center">
+        <!-- Daily Progress Bar (Visible only in Daily Mode) -->
+        <div id="daily-progress-container" class="hidden w-full max-w-lg mb-3 flex-col items-center animate-pop">
+          <div class="flex items-center justify-between w-full px-1 mb-1.5 text-xs font-semibold text-slate-300">
+            <span class="flex items-center gap-1.5">
+              <span class="text-sky-400 font-bold">🗓️ Daily Challenge</span>
+              <span id="daily-date-label" class="text-slate-400"></span>
+            </span>
+            <span id="daily-round-label" class="text-sky-300 font-mono font-bold">Round 1 of 10</span>
+          </div>
+          <!-- 10 blocks: completed (🟦), current (ring), upcoming (⬜) -->
+          <div id="daily-progress-blocks" class="w-full grid grid-cols-10 gap-1 sm:gap-1.5"></div>
+          <p class="text-[11px] text-slate-400 mt-1.5 italic">
+            Answers remain hidden until all 10 rounds are answered!
+          </p>
+        </div>
+
+        <!-- Dynamic Category Banner (Changes Automatically Each Turn) -->
+        <div class="mb-4 text-center">
+          <div
+            id="category-banner"
+            class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900/90 border border-slate-700/80 rounded-full shadow-lg text-xs sm:text-sm font-bold text-slate-200 transition-all duration-300"
+          >
+            <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-400 font-extrabold bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/60">
+              Round Stat
+            </span>
+            <span id="current-category-icon" class="text-base">👥</span>
+            <span id="current-category-name" class="text-white">Population Density</span>
+            <span class="text-slate-500 font-normal">·</span>
+            <span id="current-category-unit" class="text-emerald-400 font-mono text-xs">people/km²</span>
+          </div>
+        </div>
+
+        <!-- Cards Container -->
+        <div class="relative w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch">
+          <!-- Center VS Circle Indicator (Desktop Overlay / Mobile Center) -->
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-slate-900 border-2 border-slate-700 text-white font-display font-black text-sm shadow-xl">
+            VS
+          </div>
+
+          <!-- Left Card: Country A (Revealed Base Country) -->
+          <div
+            id="card-a"
+            class="card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300"
+          >
+            <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
+            <div class="flex flex-col items-center text-center">
+              <!-- Country Map Shape (Top & Bigger) -->
+              <div class="w-full max-w-[240px] h-32 sm:h-36 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#34d399_1px,transparent_1px)] [background-size:10px_10px]"></div>
+                <img
+                  id="shape-a"
+                  src="https://cdn.jsdelivr.net/gh/djaiss/mapsicon@master/all/jp/vector.svg"
+                  alt="Japan Map Outline"
+                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+
+              <!-- Flag (Below Shape) -->
+              <div class="mt-3.5 mb-2">
+                <img
+                  id="flag-a"
+                  src="https://flagcdn.com/w160/jp.png"
+                  alt="Japan Flag"
+                  class="w-14 sm:w-16 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+
+              <!-- Country Name (Below Flag) -->
+              <h2 id="name-a" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                Japan
+              </h2>
+              <p id="label-has-a" class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">
+                Has
+              </p>
+            </div>
+
+            <!-- Revealed Stat Box -->
+            <div class="my-6 text-center">
+              <div
+                id="value-a"
+                class="tabular-nums font-display text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight"
+              >
+                334
+              </div>
+              <div id="unit-a" class="text-sm font-semibold text-slate-300 mt-1">
+                people/km²
+              </div>
+            </div>
+
+            <!-- Bottom Context -->
+            <div class="text-center pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+              <span id="rank-context-a">Reference Benchmark</span>
+            </div>
+          </div>
+
+          <!-- Mobile VS Divider -->
+          <div class="flex md:hidden items-center justify-center -my-2 z-10">
+            <span class="px-3 py-1 bg-slate-900 border border-slate-700 text-slate-300 font-display font-black text-xs rounded-full shadow">
+              VS
+            </span>
+          </div>
+
+          <!-- Right Card: Country B (Target Country) -->
+          <div
+            id="card-b"
+            class="card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300"
+          >
+            <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
+            <div class="flex flex-col items-center text-center">
+              <!-- Country Map Shape (Top & Bigger) -->
+              <div class="w-full max-w-[240px] h-32 sm:h-36 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+                <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:10px_10px]"></div>
+                <img
+                  id="shape-b"
+                  src="https://cdn.jsdelivr.net/gh/djaiss/mapsicon@master/all/fi/vector.svg"
+                  alt="Finland Map Outline"
+                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+
+              <!-- Flag (Below Shape) -->
+              <div class="mt-3.5 mb-2">
+                <img
+                  id="flag-b"
+                  src="https://flagcdn.com/w160/fi.png"
+                  alt="Finland Flag"
+                  class="w-14 sm:w-16 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  referrerpolicy="no-referrer"
+                />
+              </div>
+
+              <!-- Country Name (Below Flag) -->
+              <h2 id="name-b" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+                Finland
+              </h2>
+              <p id="label-has-b" class="text-xs uppercase tracking-wider text-slate-400 font-semibold mt-1">
+                Has
+              </p>
+            </div>
+
+            <!-- Hidden / Counted Stat Box -->
+            <div class="my-4 text-center min-h-[90px] flex flex-col items-center justify-center">
+              <div
+                id="value-b"
+                class="tabular-nums font-display text-4xl sm:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200"
+              >
+                ???
+              </div>
+              <div id="unit-b" class="text-sm font-semibold text-slate-300 mt-1">
+                people/km²
+              </div>
+              <div id="result-feedback" class="text-xs font-bold uppercase tracking-wider mt-1 h-4 transition-all opacity-0"></div>
+            </div>
+
+            <!-- Action Buttons: HIGHER / LOWER -->
+            <div id="guess-buttons" class="grid grid-cols-2 gap-3 pt-2">
+              <button
+                id="btn-higher"
+                class="group relative flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/40 transition-all cursor-pointer"
+              >
+                <span>HIGHER</span>
+                <span class="text-emerald-200 group-hover:-translate-y-0.5 transition-transform">▲</span>
+              </button>
+              <button
+                id="btn-lower"
+                class="group relative flex items-center justify-center gap-2 py-3.5 px-4 bg-rose-600 hover:bg-rose-500 active:scale-[0.98] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-rose-950/50 border border-rose-400/40 transition-all cursor-pointer"
+              >
+                <span>LOWER</span>
+                <span class="text-rose-200 group-hover:translate-y-0.5 transition-transform">▼</span>
+              </button>
+            </div>
+
+            <!-- Bottom Subtext / Keyboard Hint -->
+            <div class="text-center pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-center gap-2">
+              <span>Than <span id="comparison-country-name" class="font-bold text-slate-200">Japan</span>?</span>
+              <span class="hidden sm:inline text-slate-600">|</span>
+              <span class="hidden sm:inline text-slate-500 text-[11px]">Use [▲ / ▼] keys</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ad Placeholder Container (Main Game Area Bottom) -->
+        <div class="w-full mt-6 max-w-3xl">
+          <div class="p-3 bg-slate-900/60 rounded-xl border border-dashed border-slate-800 text-center">
+            <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1.5">
+              Advertisement
+            </div>
+            <!-- Google AdSense Container -->
+            <div class="h-16 sm:h-20 w-full flex items-center justify-center bg-slate-800/40 rounded-lg text-xs text-slate-400">
+              <ins
+                class="adsbygoogle"
+                style="display: block; width: 100%"
+                data-ad-client="ca-pub-0000000000000000"
+                data-ad-slot="1234567890"
+                data-ad-format="horizontal"
+                data-full-width-responsive="true"
+              ></ins>
+              <span class="italic text-slate-500">Sponsored Ad Unit · ca-pub-0000000000000000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Modal / Screen -->
+      <div
+        id="game-over-screen"
+        class="hidden w-full max-w-lg mx-auto flex-col items-center text-center p-6 sm:p-8 bg-slate-900 border-2 border-slate-700 rounded-3xl shadow-2xl animate-pop"
+      >
+        <!-- Loss Badge -->
+        <div class="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-3xl mb-4">
+          💥
+        </div>
+
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight">
+          Game Over!
+        </h2>
+        <p id="game-over-msg" class="text-sm text-slate-400 mt-1 max-w-sm">
+          That was close! Finland actually had 18 people/km² vs Japan's 334.
+        </p>
+
+        <!-- Stats Card -->
+        <div class="w-full grid grid-cols-2 gap-3 my-6">
+          <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700/80">
+            <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">Final Streak</div>
+            <div id="final-streak-score" class="tabular-nums font-display text-4xl font-black text-emerald-400">0</div>
+          </div>
+          <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700/80">
+            <div class="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-1">Personal Best</div>
+            <div id="final-high-score" class="tabular-nums font-display text-4xl font-black text-amber-300">0</div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="w-full flex flex-col sm:flex-row gap-3">
+          <button
+            id="btn-play-again"
+            class="flex-1 py-3.5 px-6 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-display font-extrabold text-base rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/40 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Play Again</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          </button>
+          <button
+            id="btn-share-result"
+            class="flex-1 py-3.5 px-6 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-100 font-display font-extrabold text-base rounded-xl border border-slate-600 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Share Result</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          </button>
+        </div>
+
+        <!-- Shortcut to Daily Challenge from Game Over -->
+        <button
+          id="btn-try-daily-from-gameover"
+          class="w-full mt-3 py-2.5 px-4 bg-sky-950/80 hover:bg-sky-900/80 text-sky-200 font-bold text-xs rounded-xl border border-sky-700/60 transition-all flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <span>🗓️ Play Today's 10-Round Daily Challenge</span>
+          <span class="text-sky-400 font-mono text-[10px] bg-sky-900/60 px-1.5 py-0.5 rounded border border-sky-700/40">10 Questions</span>
+        </button>
+
+        <!-- Share Copied Toast Toast feedback -->
+        <div id="share-toast" class="h-6 mt-3 text-xs font-semibold text-emerald-400 opacity-0 transition-opacity flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+          <span>Result copied to clipboard! Ready to share.</span>
+        </div>
+
+        <!-- Ad Placeholder Container (Game Over Screen) -->
+        <div class="w-full mt-6 pt-5 border-t border-slate-800">
+          <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1.5">
+            Sponsored Partner
+          </div>
+          <div class="h-16 w-full flex items-center justify-center bg-slate-800/40 rounded-lg text-xs text-slate-400 border border-dashed border-slate-800">
+            <ins
+              class="adsbygoogle"
+              style="display: block; width: 100%"
+              data-ad-client="ca-pub-0000000000000000"
+              data-ad-slot="9876543210"
+              data-ad-format="rectangle"
+            ></ins>
+            <span class="italic text-slate-500">Ad Placement (ca-pub-0000000000000000)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Daily Challenge Scorecard Screen -->
+      <div
+        id="daily-scorecard-screen"
+        class="hidden w-full max-w-2xl mx-auto flex-col items-center p-5 sm:p-8 bg-slate-900 border-2 border-slate-700 rounded-3xl shadow-2xl animate-pop"
+      >
+        <!-- Header -->
+        <div class="w-16 h-16 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-3xl mb-3">
+          🗓️
+        </div>
+
+        <h2 class="font-display text-3xl sm:text-4xl font-extrabold text-white tracking-tight text-center">
+          Daily Scorecard
+        </h2>
+        <p id="daily-scorecard-subtitle" class="text-xs sm:text-sm text-slate-400 mt-1 text-center">
+          October 1, 2026 · 10-Round Challenge Complete
+        </p>
+
+        <!-- Big Score Pill -->
+        <div class="my-5 p-5 bg-slate-800/80 rounded-2xl border border-slate-700/80 w-full max-w-md text-center flex flex-col items-center shadow-inner">
+          <div class="text-xs uppercase tracking-wider text-slate-400 font-bold mb-1">Your Daily Score</div>
+          <div class="flex items-baseline justify-center gap-1.5">
+            <span id="daily-final-score" class="tabular-nums font-display text-5xl sm:text-6xl font-black text-emerald-400">0</span>
+            <span class="text-2xl text-slate-500 font-bold">/ 10</span>
+          </div>
+          <!-- Wordle 10-box visual blocks -->
+          <div id="daily-grid-emoji" class="text-xl sm:text-2xl tracking-widest my-2.5 font-mono select-all">
+            ⬜⬜⬜⬜⬜⬜⬜⬜⬜⬜
+          </div>
+          <p id="daily-rank-feedback" class="text-xs font-semibold text-emerald-300">
+            Evaluating results...
+          </p>
+        </div>
+
+        <!-- Action Buttons (Share / Practice / Play Endless) -->
+        <div class="w-full max-w-md flex flex-col gap-2.5 mb-5">
+          <button
+            id="btn-daily-share"
+            class="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-display font-extrabold text-sm rounded-xl shadow-lg border border-emerald-400/40 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>Share Daily Result</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+          </button>
+          <div class="grid grid-cols-2 gap-2.5">
+            <button
+              id="btn-daily-retry"
+              class="py-3 px-3 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 font-display font-bold text-xs rounded-xl border border-slate-700 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>Practice (Unranked)</span>
+              <span>🔄</span>
+            </button>
+            <button
+              id="btn-daily-to-endless"
+              class="py-3 px-3 bg-slate-800 hover:bg-slate-700 active:scale-[0.98] text-slate-200 font-display font-bold text-xs rounded-xl border border-slate-700 transition-all cursor-pointer flex items-center justify-center gap-1.5"
+            >
+              <span>Endless Streak</span>
+              <span>🔥</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Share Toast -->
+        <div id="daily-share-toast" class="h-5 -mt-3 mb-4 text-xs font-semibold text-emerald-400 opacity-0 transition-opacity">
+          Copied Daily Challenge result to clipboard! 📋
+        </div>
+
+        <!-- Detailed 10-matchup line-by-line breakdown -->
+        <div class="w-full text-left mt-2">
+          <div class="flex items-center justify-between pb-2 mb-3 border-b border-slate-800 text-xs font-bold uppercase tracking-wider text-slate-400">
+            <span>All 10 Matchup Details</span>
+            <span>Outcome</span>
+          </div>
+
+          <div id="daily-scorecard-list" class="flex flex-col gap-2.5 max-h-[380px] overflow-y-auto pr-1">
+            <!-- Line-by-line items populated dynamically -->
+          </div>
+        </div>
+
+        <!-- Next daily challenge timer -->
+        <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs text-slate-400 text-center w-full flex items-center justify-center gap-2">
+          <span>Next Daily Challenge in:</span>
+          <span id="daily-countdown" class="font-mono font-bold text-amber-300">--:--:--</span>
+        </div>
+
+        <!-- Ad Placeholder Container (Daily Scorecard Screen) -->
+        <div class="w-full mt-6 pt-4 border-t border-slate-800">
+          <div class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mb-1.5 text-center">
+            Sponsored Partner
+          </div>
+          <div class="h-16 w-full flex items-center justify-center bg-slate-800/40 rounded-lg text-xs text-slate-400 border border-dashed border-slate-800">
+            <span class="italic text-slate-500">Ad Placement (ca-pub-0000000000000000)</span>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-4 border-t border-slate-800/80 bg-slate-900/50 text-center text-xs text-slate-500">
+      <div class="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+        <span>Country Stat Battles · Compare geography, mountain peaks, culture & global stats</span>
+        <span>Real-world data sourced from UN, World Bank, UNESCO, Ookla & Olympic Records</span>
+      </div>
+    </footer>
+
+    <!-- JavaScript Game Logic -->
+    <script>
+      /**
+       * COUNTRY STAT BATTLES - Single-file Engine
+       * Embedded real-world dataset of 45+ countries.
+       */
+      const COUNTRIES = [
+        { name: "Japan", code: "jp", population_density: 334, coffee_consumption: 3.6, mcdonalds_per_million: 23.5, internet_speed: 190, unesco_sites: 26, beer_consumption: 38.4, sunshine_hours: 1900, olympic_golds: 189, median_age: 49.5, highest_peak: 3776, coastline_length: 29751, chocolate_consumption: 1.2, avg_male_height: 172.1, renewable_electricity: 22.4, gdp_per_capita: 33800, life_expectancy: 84.6, forest_coverage: 68.4 },
+        { name: "Finland", code: "fi", population_density: 18, coffee_consumption: 12.0, mcdonalds_per_million: 12.0, internet_speed: 145, unesco_sites: 7, beer_consumption: 76.0, sunshine_hours: 1800, olympic_golds: 101, median_age: 43.3, highest_peak: 1324, coastline_length: 46000, chocolate_consumption: 7.3, avg_male_height: 179.6, renewable_electricity: 53.0, gdp_per_capita: 53600, life_expectancy: 82.0, forest_coverage: 73.7 },
+        { name: "Brazil", code: "br", population_density: 25, coffee_consumption: 5.8, mcdonalds_per_million: 5.0, internet_speed: 155, unesco_sites: 24, beer_consumption: 61.2, sunshine_hours: 2200, olympic_golds: 40, median_age: 34.3, highest_peak: 2995, coastline_length: 7491, chocolate_consumption: 1.3, avg_male_height: 173.6, renewable_electricity: 88.0, gdp_per_capita: 10400, life_expectancy: 76.1, forest_coverage: 59.4 },
+        { name: "United States", code: "us", population_density: 37, coffee_consumption: 4.4, mcdonalds_per_million: 41.2, internet_speed: 245, unesco_sites: 26, beer_consumption: 70.2, sunshine_hours: 2800, olympic_golds: 1061, median_age: 38.9, highest_peak: 6190, coastline_length: 19924, chocolate_consumption: 4.5, avg_male_height: 177.1, renewable_electricity: 22.0, gdp_per_capita: 81600, life_expectancy: 77.5, forest_coverage: 33.9 },
+        { name: "Norway", code: "no", population_density: 15, coffee_consumption: 9.9, mcdonalds_per_million: 14.0, internet_speed: 175, unesco_sites: 8, beer_consumption: 49.9, sunshine_hours: 1600, olympic_golds: 65, median_age: 40.5, highest_peak: 2469, coastline_length: 58133, chocolate_consumption: 8.5, avg_male_height: 180.5, renewable_electricity: 98.5, gdp_per_capita: 87800, life_expectancy: 83.2, forest_coverage: 33.4 },
+        { name: "Singapore", code: "sg", population_density: 8358, coffee_consumption: 2.1, mcdonalds_per_million: 25.0, internet_speed: 310, unesco_sites: 1, beer_consumption: 20.1, sunshine_hours: 2020, olympic_golds: 1, median_age: 42.8, highest_peak: 164, coastline_length: 193, chocolate_consumption: 1.5, avg_male_height: 172.6, renewable_electricity: 4.0, gdp_per_capita: 88400, life_expectancy: 84.1, forest_coverage: 23.1 },
+        { name: "Bangladesh", code: "bd", population_density: 1328, coffee_consumption: 0.1, mcdonalds_per_million: 0.0, internet_speed: 45, unesco_sites: 3, beer_consumption: 0.2, sunshine_hours: 2100, olympic_golds: 0, median_age: 27.9, highest_peak: 1052, coastline_length: 580, chocolate_consumption: 0.1, avg_male_height: 165.1, renewable_electricity: 3.5, gdp_per_capita: 2600, life_expectancy: 72.4, forest_coverage: 14.5 },
+        { name: "Canada", code: "ca", population_density: 4, coffee_consumption: 6.5, mcdonalds_per_million: 38.0, internet_speed: 215, unesco_sites: 22, beer_consumption: 55.4, sunshine_hours: 2000, olympic_golds: 77, median_age: 41.1, highest_peak: 5959, coastline_length: 202080, chocolate_consumption: 5.5, avg_male_height: 178.1, renewable_electricity: 68.0, gdp_per_capita: 53300, life_expectancy: 82.8, forest_coverage: 38.2 },
+        { name: "Australia", code: "au", population_density: 3, coffee_consumption: 3.0, mcdonalds_per_million: 40.5, internet_speed: 95, unesco_sites: 20, beer_consumption: 65.1, sunshine_hours: 3000, olympic_golds: 182, median_age: 37.9, highest_peak: 2228, coastline_length: 25760, chocolate_consumption: 4.9, avg_male_height: 178.8, renewable_electricity: 35.0, gdp_per_capita: 64700, life_expectancy: 83.3, forest_coverage: 17.4 },
+        { name: "Germany", code: "de", population_density: 240, coffee_consumption: 6.5, mcdonalds_per_million: 17.5, internet_speed: 140, unesco_sites: 54, beer_consumption: 92.4, sunshine_hours: 1650, olympic_golds: 201, median_age: 46.8, highest_peak: 2962, coastline_length: 2389, chocolate_consumption: 9.2, avg_male_height: 180.3, renewable_electricity: 52.0, gdp_per_capita: 52700, life_expectancy: 81.0, forest_coverage: 32.7 },
+        { name: "Italy", code: "it", population_density: 198, coffee_consumption: 5.9, mcdonalds_per_million: 11.5, internet_speed: 130, unesco_sites: 60, beer_consumption: 31.5, sunshine_hours: 2500, olympic_golds: 222, median_age: 48.0, highest_peak: 4808, coastline_length: 7600, chocolate_consumption: 4.0, avg_male_height: 177.8, renewable_electricity: 44.0, gdp_per_capita: 37100, life_expectancy: 83.7, forest_coverage: 32.5 },
+        { name: "Netherlands", code: "nl", population_density: 523, coffee_consumption: 8.4, mcdonalds_per_million: 15.0, internet_speed: 195, unesco_sites: 13, beer_consumption: 65.8, sunshine_hours: 1650, olympic_golds: 110, median_age: 42.8, highest_peak: 322, coastline_length: 1914, chocolate_consumption: 5.4, avg_male_height: 183.8, renewable_electricity: 48.0, gdp_per_capita: 62500, life_expectancy: 81.7, forest_coverage: 11.1 },
+        { name: "United Kingdom", code: "gb", population_density: 279, coffee_consumption: 2.8, mcdonalds_per_million: 21.0, internet_speed: 135, unesco_sites: 35, beer_consumption: 65.6, sunshine_hours: 1400, olympic_golds: 298, median_age: 40.7, highest_peak: 1345, coastline_length: 12429, chocolate_consumption: 8.1, avg_male_height: 177.5, renewable_electricity: 47.0, gdp_per_capita: 48800, life_expectancy: 81.3, forest_coverage: 13.2 },
+        { name: "France", code: "fr", population_density: 124, coffee_consumption: 5.4, mcdonalds_per_million: 22.5, internet_speed: 230, unesco_sites: 53, beer_consumption: 33.0, sunshine_hours: 1950, olympic_golds: 239, median_age: 42.4, highest_peak: 4808, coastline_length: 4853, chocolate_consumption: 6.8, avg_male_height: 178.4, renewable_electricity: 28.0, gdp_per_capita: 44400, life_expectancy: 82.5, forest_coverage: 31.5 },
+        { name: "South Korea", code: "kr", population_density: 516, coffee_consumption: 3.5, mcdonalds_per_million: 8.0, internet_speed: 170, unesco_sites: 16, beer_consumption: 39.4, sunshine_hours: 2100, olympic_golds: 109, median_age: 45.0, highest_peak: 1950, coastline_length: 2413, chocolate_consumption: 1.8, avg_male_height: 175.5, renewable_electricity: 9.0, gdp_per_capita: 33100, life_expectancy: 83.6, forest_coverage: 64.5 },
+        { name: "Sweden", code: "se", population_density: 25, coffee_consumption: 8.2, mcdonalds_per_million: 21.5, internet_speed: 185, unesco_sites: 15, beer_consumption: 51.5, sunshine_hours: 1800, olympic_golds: 151, median_age: 41.1, highest_peak: 2097, coastline_length: 26384, chocolate_consumption: 7.8, avg_male_height: 180.5, renewable_electricity: 68.0, gdp_per_capita: 56000, life_expectancy: 83.2, forest_coverage: 68.7 },
+        { name: "Colombia", code: "co", population_density: 46, coffee_consumption: 1.8, mcdonalds_per_million: 1.6, internet_speed: 120, unesco_sites: 9, beer_consumption: 48.0, sunshine_hours: 1900, olympic_golds: 5, median_age: 32.0, highest_peak: 5775, coastline_length: 3208, chocolate_consumption: 1.2, avg_male_height: 171.9, renewable_electricity: 74.0, gdp_per_capita: 6900, life_expectancy: 77.1, forest_coverage: 52.8 },
+        { name: "Vietnam", code: "vn", population_density: 314, coffee_consumption: 2.6, mcdonalds_per_million: 0.3, internet_speed: 115, unesco_sites: 8, beer_consumption: 42.0, sunshine_hours: 2150, olympic_golds: 1, median_age: 33.2, highest_peak: 3143, coastline_length: 3444, chocolate_consumption: 0.2, avg_male_height: 168.1, renewable_electricity: 44.0, gdp_per_capita: 4300, life_expectancy: 75.4, forest_coverage: 47.2 },
+        { name: "India", code: "in", population_density: 435, coffee_consumption: 0.1, mcdonalds_per_million: 0.4, internet_speed: 65, unesco_sites: 43, beer_consumption: 2.0, sunshine_hours: 2700, olympic_golds: 10, median_age: 28.7, highest_peak: 8586, coastline_length: 7516, chocolate_consumption: 0.2, avg_male_height: 166.5, renewable_electricity: 22.0, gdp_per_capita: 2600, life_expectancy: 70.8, forest_coverage: 24.3 },
+        { name: "Ethiopia", code: "et", population_density: 115, coffee_consumption: 2.3, mcdonalds_per_million: 0.0, internet_speed: 10, unesco_sites: 12, beer_consumption: 11.2, sunshine_hours: 2800, olympic_golds: 24, median_age: 19.8, highest_peak: 4550, coastline_length: 0, chocolate_consumption: 0.1, avg_male_height: 168.8, renewable_electricity: 96.0, gdp_per_capita: 1200, life_expectancy: 65.0, forest_coverage: 15.2 },
+        { name: "Mexico", code: "mx", population_density: 66, coffee_consumption: 1.5, mcdonalds_per_million: 3.2, internet_speed: 95, unesco_sites: 35, beer_consumption: 69.9, sunshine_hours: 2900, olympic_golds: 13, median_age: 30.1, highest_peak: 5636, coastline_length: 9330, chocolate_consumption: 0.8, avg_male_height: 170.3, renewable_electricity: 24.0, gdp_per_capita: 13900, life_expectancy: 75.4, forest_coverage: 33.8 },
+        { name: "Iceland", code: "is", population_density: 4, coffee_consumption: 9.0, mcdonalds_per_million: 0.0, internet_speed: 235, unesco_sites: 3, beer_consumption: 57.0, sunshine_hours: 1300, olympic_golds: 0, median_age: 37.5, highest_peak: 2110, coastline_length: 4970, chocolate_consumption: 6.9, avg_male_height: 181.0, renewable_electricity: 100.0, gdp_per_capita: 78800, life_expectancy: 83.1, forest_coverage: 0.5 },
+        { name: "Switzerland", code: "ch", population_density: 219, coffee_consumption: 7.9, mcdonalds_per_million: 20.0, internet_speed: 225, unesco_sites: 13, beer_consumption: 51.0, sunshine_hours: 1750, olympic_golds: 54, median_age: 43.1, highest_peak: 4634, coastline_length: 0, chocolate_consumption: 11.6, avg_male_height: 178.4, renewable_electricity: 76.0, gdp_per_capita: 99900, life_expectancy: 84.0, forest_coverage: 32.1 },
+        { name: "Spain", code: "es", population_density: 94, coffee_consumption: 4.5, mcdonalds_per_million: 12.5, internet_speed: 220, unesco_sites: 50, beer_consumption: 81.6, sunshine_hours: 2800, olympic_golds: 53, median_age: 45.5, highest_peak: 3718, coastline_length: 4964, chocolate_consumption: 3.8, avg_male_height: 176.6, renewable_electricity: 50.0, gdp_per_capita: 32600, life_expectancy: 83.3, forest_coverage: 37.1 },
+        { name: "Argentina", code: "ar", population_density: 17, coffee_consumption: 1.0, mcdonalds_per_million: 5.2, internet_speed: 110, unesco_sites: 12, beer_consumption: 43.0, sunshine_hours: 2600, olympic_golds: 22, median_age: 32.5, highest_peak: 6961, coastline_length: 4989, chocolate_consumption: 1.6, avg_male_height: 174.5, renewable_electricity: 32.0, gdp_per_capita: 13700, life_expectancy: 76.7, forest_coverage: 10.4 },
+        { name: "Egypt", code: "eg", population_density: 105, coffee_consumption: 0.3, mcdonalds_per_million: 1.8, internet_speed: 70, unesco_sites: 7, beer_consumption: 4.0, sunshine_hours: 3850, olympic_golds: 9, median_age: 24.8, highest_peak: 2629, coastline_length: 2450, chocolate_consumption: 0.4, avg_male_height: 173.5, renewable_electricity: 12.0, gdp_per_capita: 3700, life_expectancy: 71.3, forest_coverage: 0.1 },
+        { name: "Kenya", code: "ke", population_density: 94, coffee_consumption: 0.1, mcdonalds_per_million: 0.0, internet_speed: 18, unesco_sites: 8, beer_consumption: 12.0, sunshine_hours: 2650, olympic_golds: 39, median_age: 20.0, highest_peak: 5199, coastline_length: 536, chocolate_consumption: 0.1, avg_male_height: 170.0, renewable_electricity: 85.0, gdp_per_capita: 2100, life_expectancy: 67.5, forest_coverage: 7.8 },
+        { name: "New Zealand", code: "nz", population_density: 19, coffee_consumption: 4.0, mcdonalds_per_million: 35.0, internet_speed: 180, unesco_sites: 3, beer_consumption: 61.0, sunshine_hours: 2050, olympic_golds: 63, median_age: 37.6, highest_peak: 3724, coastline_length: 15134, chocolate_consumption: 4.8, avg_male_height: 177.7, renewable_electricity: 84.0, gdp_per_capita: 48800, life_expectancy: 82.5, forest_coverage: 37.6 },
+        { name: "Greece", code: "gr", population_density: 81, coffee_consumption: 5.5, mcdonalds_per_million: 2.8, internet_speed: 55, unesco_sites: 19, beer_consumption: 36.0, sunshine_hours: 2800, olympic_golds: 40, median_age: 46.1, highest_peak: 2917, coastline_length: 13676, chocolate_consumption: 2.9, avg_male_height: 177.3, renewable_electricity: 47.0, gdp_per_capita: 22800, life_expectancy: 81.1, forest_coverage: 30.5 },
+        { name: "Indonesia", code: "id", population_density: 145, coffee_consumption: 1.3, mcdonalds_per_million: 1.1, internet_speed: 30, unesco_sites: 10, beer_consumption: 0.5, sunshine_hours: 2000, olympic_golds: 10, median_age: 30.3, highest_peak: 4884, coastline_length: 54716, chocolate_consumption: 0.3, avg_male_height: 166.3, renewable_electricity: 14.0, gdp_per_capita: 4900, life_expectancy: 71.9, forest_coverage: 49.1 },
+        { name: "Turkey", code: "tr", population_density: 110, coffee_consumption: 1.4, mcdonalds_per_million: 3.2, internet_speed: 45, unesco_sites: 21, beer_consumption: 11.0, sunshine_hours: 2500, olympic_golds: 41, median_age: 32.8, highest_peak: 5137, coastline_length: 7200, chocolate_consumption: 2.2, avg_male_height: 176.4, renewable_electricity: 42.0, gdp_per_capita: 12800, life_expectancy: 76.0, forest_coverage: 28.9 },
+        { name: "South Africa", code: "za", population_density: 49, coffee_consumption: 0.7, mcdonalds_per_million: 6.0, internet_speed: 60, unesco_sites: 12, beer_consumption: 60.0, sunshine_hours: 3200, olympic_golds: 28, median_age: 28.0, highest_peak: 3450, coastline_length: 2798, chocolate_consumption: 1.5, avg_male_height: 169.2, renewable_electricity: 12.0, gdp_per_capita: 6100, life_expectancy: 65.3, forest_coverage: 14.1 },
+        { name: "Austria", code: "at", population_density: 109, coffee_consumption: 6.5, mcdonalds_per_million: 22.0, internet_speed: 115, unesco_sites: 12, beer_consumption: 98.7, sunshine_hours: 1800, olympic_golds: 22, median_age: 44.5, highest_peak: 3798, coastline_length: 0, chocolate_consumption: 9.7, avg_male_height: 179.2, renewable_electricity: 78.0, gdp_per_capita: 56800, life_expectancy: 81.6, forest_coverage: 47.3 },
+        { name: "Belgium", code: "be", population_density: 383, coffee_consumption: 6.8, mcdonalds_per_million: 9.5, internet_speed: 125, unesco_sites: 16, beer_consumption: 65.0, sunshine_hours: 1550, olympic_golds: 47, median_age: 41.9, highest_peak: 694, coastline_length: 66, chocolate_consumption: 5.6, avg_male_height: 178.9, renewable_electricity: 31.0, gdp_per_capita: 53300, life_expectancy: 81.9, forest_coverage: 22.6 },
+        { name: "Ireland", code: "ie", population_density: 73, coffee_consumption: 2.5, mcdonalds_per_million: 18.0, internet_speed: 135, unesco_sites: 2, beer_consumption: 77.0, sunshine_hours: 1450, olympic_golds: 15, median_age: 38.8, highest_peak: 1039, coastline_length: 1448, chocolate_consumption: 7.7, avg_male_height: 177.9, renewable_electricity: 42.0, gdp_per_capita: 103600, life_expectancy: 82.4, forest_coverage: 11.4 },
+        { name: "Denmark", code: "dk", population_density: 138, coffee_consumption: 8.7, mcdonalds_per_million: 16.5, internet_speed: 210, unesco_sites: 11, beer_consumption: 60.0, sunshine_hours: 1650, olympic_golds: 50, median_age: 42.3, highest_peak: 171, coastline_length: 7314, chocolate_consumption: 7.4, avg_male_height: 181.9, renewable_electricity: 82.0, gdp_per_capita: 67800, life_expectancy: 81.4, forest_coverage: 15.7 },
+        { name: "Portugal", code: "pt", population_density: 112, coffee_consumption: 5.4, mcdonalds_per_million: 18.5, internet_speed: 170, unesco_sites: 17, beer_consumption: 51.0, sunshine_hours: 2800, olympic_golds: 6, median_age: 46.2, highest_peak: 2351, coastline_length: 1793, chocolate_consumption: 2.1, avg_male_height: 174.4, renewable_electricity: 61.0, gdp_per_capita: 27200, life_expectancy: 81.5, forest_coverage: 36.2 },
+        { name: "Czech Republic", code: "cz", population_density: 139, coffee_consumption: 4.0, mcdonalds_per_million: 10.5, internet_speed: 85, unesco_sites: 17, beer_consumption: 181.9, sunshine_hours: 1650, olympic_golds: 22, median_age: 43.7, highest_peak: 1603, coastline_length: 0, chocolate_consumption: 5.3, avg_male_height: 180.1, renewable_electricity: 16.0, gdp_per_capita: 30400, life_expectancy: 79.5, forest_coverage: 34.6 },
+        { name: "Poland", code: "pl", population_density: 123, coffee_consumption: 3.1, mcdonalds_per_million: 13.5, internet_speed: 160, unesco_sites: 17, beer_consumption: 93.6, sunshine_hours: 1600, olympic_golds: 73, median_age: 42.2, highest_peak: 2499, coastline_length: 440, chocolate_consumption: 5.8, avg_male_height: 178.7, renewable_electricity: 26.0, gdp_per_capita: 22100, life_expectancy: 78.6, forest_coverage: 31.0 },
+        { name: "Monaco", code: "mc", population_density: 19495, coffee_consumption: 6.0, mcdonalds_per_million: 25.0, internet_speed: 290, unesco_sites: 0, beer_consumption: 40.0, sunshine_hours: 2600, olympic_golds: 0, median_age: 55.4, highest_peak: 162, coastline_length: 4, chocolate_consumption: 6.0, avg_male_height: 177.5, renewable_electricity: 15.0, gdp_per_capita: 240000, life_expectancy: 87.0, forest_coverage: 0.0 },
+        { name: "Mongolia", code: "mn", population_density: 2, coffee_consumption: 0.2, mcdonalds_per_million: 0.0, internet_speed: 55, unesco_sites: 6, beer_consumption: 31.0, sunshine_hours: 2800, olympic_golds: 2, median_age: 29.8, highest_peak: 4374, coastline_length: 0, chocolate_consumption: 0.6, avg_male_height: 168.4, renewable_electricity: 11.0, gdp_per_capita: 5300, life_expectancy: 71.0, forest_coverage: 8.0 },
+        { name: "Chile", code: "cl", population_density: 26, coffee_consumption: 1.2, mcdonalds_per_million: 5.0, internet_speed: 275, unesco_sites: 7, beer_consumption: 52.0, sunshine_hours: 2750, olympic_golds: 3, median_age: 36.1, highest_peak: 6893, coastline_length: 6435, chocolate_consumption: 2.2, avg_male_height: 172.9, renewable_electricity: 62.0, gdp_per_capita: 17000, life_expectancy: 80.2, forest_coverage: 24.3 },
+        { name: "Thailand", code: "th", population_density: 137, coffee_consumption: 1.3, mcdonalds_per_million: 3.4, internet_speed: 220, unesco_sites: 7, beer_consumption: 32.0, sunshine_hours: 2350, olympic_golds: 11, median_age: 40.1, highest_peak: 2565, coastline_length: 3219, chocolate_consumption: 0.3, avg_male_height: 170.3, renewable_electricity: 18.0, gdp_per_capita: 7300, life_expectancy: 78.7, forest_coverage: 38.9 },
+        { name: "Philippines", code: "ph", population_density: 375, coffee_consumption: 3.4, mcdonalds_per_million: 6.5, internet_speed: 95, unesco_sites: 6, beer_consumption: 19.0, sunshine_hours: 2100, olympic_golds: 3, median_age: 25.7, highest_peak: 2954, coastline_length: 36289, chocolate_consumption: 0.4, avg_male_height: 165.2, renewable_electricity: 23.0, gdp_per_capita: 3800, life_expectancy: 71.7, forest_coverage: 24.2 },
+        { name: "Morocco", code: "ma", population_density: 83, coffee_consumption: 0.9, mcdonalds_per_million: 1.6, internet_speed: 40, unesco_sites: 9, beer_consumption: 6.0, sunshine_hours: 3100, olympic_golds: 8, median_age: 29.5, highest_peak: 4167, coastline_length: 1835, chocolate_consumption: 0.7, avg_male_height: 172.7, renewable_electricity: 20.0, gdp_per_capita: 3900, life_expectancy: 74.3, forest_coverage: 12.6 }
+      ];
+
+      const CATEGORIES = {
+        population_density: {
+          name: "Population Density",
+          unit: "people/km²",
+          icon: "👥",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " people/km²",
+          formatVal: (v) => v.toLocaleString()
+        },
+        coffee_consumption: {
+          name: "Coffee Consumption",
+          unit: "kg / person / yr",
+          icon: "☕",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " kg/yr",
+          formatVal: (v) => v.toFixed(1)
+        },
+        mcdonalds_per_million: {
+          name: "McDonald's Locations",
+          unit: "per 1M people",
+          icon: "🍔",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " per 1M",
+          formatVal: (v) => v.toFixed(1)
+        },
+        internet_speed: {
+          name: "Average Internet Speed",
+          unit: "Mbps (Broadband)",
+          icon: "⚡",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " Mbps",
+          formatVal: (v) => v.toLocaleString()
+        },
+        unesco_sites: {
+          name: "UNESCO World Heritage Sites",
+          unit: "sites registered",
+          icon: "🏛️",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " sites",
+          formatVal: (v) => v.toLocaleString()
+        },
+        beer_consumption: {
+          name: "Beer Consumption",
+          unit: "liters / person / yr",
+          icon: "🍺",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " L/yr",
+          formatVal: (v) => v.toFixed(1)
+        },
+        sunshine_hours: {
+          name: "Annual Sunshine Hours",
+          unit: "hours / year",
+          icon: "☀️",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " hrs/yr",
+          formatVal: (v) => v.toLocaleString()
+        },
+        olympic_golds: {
+          name: "Olympic Gold Medals",
+          unit: "all-time Summer Golds",
+          icon: "🥇",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " Golds",
+          formatVal: (v) => v.toLocaleString()
+        },
+        median_age: {
+          name: "Median Population Age",
+          unit: "years old",
+          icon: "🎂",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " years old",
+          formatVal: (v) => v.toFixed(1)
+        },
+        highest_peak: {
+          name: "Highest Elevation Peak",
+          unit: "meters (above sea level)",
+          icon: "🏔️",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " meters",
+          formatVal: (v) => v.toLocaleString() + " m"
+        },
+        coastline_length: {
+          name: "Coastline Length",
+          unit: "kilometers",
+          icon: "🌊",
+          decimals: 0,
+          format: (v) => v.toLocaleString() + " km",
+          formatVal: (v) => v.toLocaleString() + " km"
+        },
+        chocolate_consumption: {
+          name: "Chocolate Consumption",
+          unit: "kg / person / yr",
+          icon: "🍫",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " kg/yr",
+          formatVal: (v) => v.toFixed(1)
+        },
+        avg_male_height: {
+          name: "Average Male Height",
+          unit: "centimeters",
+          icon: "📏",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " cm",
+          formatVal: (v) => v.toFixed(1) + " cm"
+        },
+        renewable_electricity: {
+          name: "Renewable Electricity Share",
+          unit: "% of total electricity",
+          icon: "♻️",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + "%",
+          formatVal: (v) => v.toFixed(1) + "%"
+        },
+        gdp_per_capita: {
+          name: "GDP per Capita",
+          unit: "USD $",
+          icon: "💰",
+          decimals: 0,
+          format: (v) => "$" + v.toLocaleString(),
+          formatVal: (v) => "$" + v.toLocaleString()
+        },
+        life_expectancy: {
+          name: "Life Expectancy",
+          unit: "years",
+          icon: "🌱",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + " years",
+          formatVal: (v) => v.toFixed(1)
+        },
+        forest_coverage: {
+          name: "Forest Coverage",
+          unit: "% of land area",
+          icon: "🌲",
+          decimals: 1,
+          format: (v) => v.toFixed(1) + "%",
+          formatVal: (v) => v.toFixed(1) + "%"
+        }
+      };
+
+      // Sound FX Synthesizer using Web Audio API
+      class SoundFX {
+        constructor() {
+          this.ctx = null;
+          this.enabled = true;
+        }
+
+        init() {
+          if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            this.ctx = new AudioCtx();
+          }
+          if (this.ctx && this.ctx.state === "suspended") {
+            this.ctx.resume().catch(() => {});
+          }
+        }
+
+        playTone(freq, type, duration, startTime = 0, volume = 0.12) {
+          if (!this.enabled) return;
+          try {
+            this.init();
+            if (!this.ctx) return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(freq, this.ctx.currentTime + startTime);
+            gain.gain.setValueAtTime(volume, this.ctx.currentTime + startTime);
+            gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + startTime + duration);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(this.ctx.currentTime + startTime);
+            osc.stop(this.ctx.currentTime + startTime + duration);
+          } catch (e) {
+            // Audio policy fallback
+          }
+        }
+
+        // Clean subtle tactile click when picking Higher/Lower
+        click() {
+          if (!this.enabled) return;
+          try {
+            this.init();
+            if (!this.ctx) return;
+            const now = this.ctx.currentTime;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.type = "triangle";
+            osc.frequency.setValueAtTime(950, now);
+            osc.frequency.exponentialRampToValueAtTime(320, now + 0.04);
+            gain.gain.setValueAtTime(0.08, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+            osc.connect(gain);
+            gain.connect(this.ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.045);
+          } catch (e) {}
+        }
+
+        // Satisfying chime when round counts up or rolls
+        chime(pitch = 1) {
+          if (!this.enabled) return;
+          try {
+            this.init();
+            if (!this.ctx) return;
+            this.playTone(784 * pitch, "sine", 0.15, 0, 0.08); // G5
+            this.playTone(1046.5 * pitch, "triangle", 0.22, 0.04, 0.06); // C6
+          } catch (e) {}
+        }
+
+        // Fast tick for rolling number counters
+        tick() {
+          this.playTone(950, "sine", 0.03, 0, 0.03);
+        }
+
+        // Quick punchy error buzz
+        errorBuzz() {
+          if (!this.enabled) return;
+          try {
+            this.init();
+            if (!this.ctx) return;
+            this.playTone(180, "sawtooth", 0.22, 0, 0.14);
+            this.playTone(138, "sawtooth", 0.32, 0.08, 0.14);
+          } catch (e) {}
+        }
+
+        // Dramatic drum roll for final reveal screen
+        drumRoll(duration = 1.0, callback) {
+          if (!this.enabled) {
+            if (callback) callback();
+            return;
+          }
+          try {
+            this.init();
+            if (!this.ctx) {
+              if (callback) callback();
+              return;
+            }
+            const now = this.ctx.currentTime;
+            const numHits = 22;
+            for (let i = 0; i < numHits; i++) {
+              const t = now + (i / numHits) * duration;
+              const osc = this.ctx.createOscillator();
+              const gain = this.ctx.createGain();
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(130 + Math.random() * 50, t);
+              const vol = 0.03 + (i / numHits) * 0.14;
+              gain.gain.setValueAtTime(vol, t);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
+              osc.connect(gain);
+              gain.connect(this.ctx.destination);
+              osc.start(t);
+              osc.stop(t + 0.045);
+            }
+            // Final accent hit
+            this.playTone(110, "triangle", 0.35, duration, 0.18);
+            this.playTone(880, "sine", 0.25, duration, 0.08);
+
+            if (callback) {
+              setTimeout(callback, duration * 1000);
+            }
+          } catch (e) {
+            if (callback) callback();
+          }
+        }
+
+        correct() {
+          this.chime(1);
+          this.playTone(1318.5, "sine", 0.25, 0.08, 0.08); // E6
+        }
+
+        incorrect() {
+          this.errorBuzz();
+        }
+
+        celebrate() {
+          this.playTone(523.25, "triangle", 0.12, 0, 0.12);
+          this.playTone(659.25, "triangle", 0.12, 0.08, 0.12);
+          this.playTone(783.99, "triangle", 0.14, 0.16, 0.14);
+          this.playTone(1046.5, "sine", 0.5, 0.24, 0.18);
+        }
+      }
+
+      const sfx = new SoundFX();
+
+      // Core State
+      let gameMode = "endless"; // 'endless' or 'daily'
+      let currentCategoryKey = "population_density";
+      let activeCategory = CATEGORIES.population_density;
+      let countryA = null;
+      let countryB = null;
+      let streak = 0;
+      let highScore = parseInt(localStorage.getItem("csb_high_score") || "0", 10);
+      let isBusy = false;
+      let roundHistory = []; // For Endless Wordle share blocks: 'correct' or 'incorrect'
+
+      // Daily Challenge State
+      const todayDateKey = getDailyDateKey();
+      let dailyMatchups = generateDailyMatchups(todayDateKey);
+      let dailyChoices = loadSavedDailyChoices(); // Array of 'higher' or 'lower' strings
+
+      // DOM Elements - Navigation & Modes
+      const tabEndless = document.getElementById("tab-endless");
+      const tabDaily = document.getElementById("tab-daily");
+      const endlessStatsGroup = document.getElementById("endless-stats-group");
+      const dailyStatsGroup = document.getElementById("daily-stats-group");
+      const dailyHeaderLabel = document.getElementById("daily-header-label");
+
+      // DOM Elements - Endless Stats
+      const streakEl = document.getElementById("streak-score");
+      const highEl = document.getElementById("high-score");
+      const fireIcon = document.getElementById("fire-icon");
+
+      // DOM Elements - Daily Progress Bar
+      const dailyProgressContainer = document.getElementById("daily-progress-container");
+      const dailyProgressBlocks = document.getElementById("daily-progress-blocks");
+      const dailyDateLabel = document.getElementById("daily-date-label");
+      const dailyRoundLabel = document.getElementById("daily-round-label");
+
+      // DOM Elements - Country Cards
+      const cardA = document.getElementById("card-a");
+      const flagA = document.getElementById("flag-a");
+      const shapeA = document.getElementById("shape-a");
+      const nameA = document.getElementById("name-a");
+      const valueA = document.getElementById("value-a");
+      const unitA = document.getElementById("unit-a");
+
+      const cardB = document.getElementById("card-b");
+      const flagB = document.getElementById("flag-b");
+      const shapeB = document.getElementById("shape-b");
+      const nameB = document.getElementById("name-b");
+      const valueB = document.getElementById("value-b");
+      const unitB = document.getElementById("unit-b");
+      const resultFeedback = document.getElementById("result-feedback");
+      const compCountryName = document.getElementById("comparison-country-name");
+
+      const btnHigher = document.getElementById("btn-higher");
+      const btnLower = document.getElementById("btn-lower");
+
+      // DOM Elements - Game Views & Screens
+      const gameView = document.getElementById("game-view");
+      const gameOverScreen = document.getElementById("game-over-screen");
+      const finalStreakEl = document.getElementById("final-streak-score");
+      const finalHighEl = document.getElementById("final-high-score");
+      const gameOverMsg = document.getElementById("game-over-msg");
+      const btnPlayAgain = document.getElementById("btn-play-again");
+      const btnShareResult = document.getElementById("btn-share-result");
+      const shareToast = document.getElementById("share-toast");
+      const btnTryDailyFromGameOver = document.getElementById("btn-try-daily-from-gameover");
+
+      // DOM Elements - Daily Scorecard Screen
+      const dailyScorecardScreen = document.getElementById("daily-scorecard-screen");
+      const dailyScorecardSubtitle = document.getElementById("daily-scorecard-subtitle");
+      const dailyFinalScore = document.getElementById("daily-final-score");
+      const dailyGridEmoji = document.getElementById("daily-grid-emoji");
+      const dailyRankFeedback = document.getElementById("daily-rank-feedback");
+      const dailyScorecardList = document.getElementById("daily-scorecard-list");
+      const btnDailyShare = document.getElementById("btn-daily-share");
+      const btnDailyRetry = document.getElementById("btn-daily-retry");
+      const btnDailyToEndless = document.getElementById("btn-daily-to-endless");
+      const dailyShareToast = document.getElementById("daily-share-toast");
+      const dailyCountdown = document.getElementById("daily-countdown");
+
+      // DOM Elements - Category Banner & Sound
+      const categoryBanner = document.getElementById("category-banner");
+      const curCatIcon = document.getElementById("current-category-icon");
+      const curCatName = document.getElementById("current-category-name");
+      const curCatUnit = document.getElementById("current-category-unit");
+
+      const soundToggleBtn = document.getElementById("sound-toggle-btn");
+      const soundIconOn = document.getElementById("sound-icon-on");
+      const soundIconOff = document.getElementById("sound-icon-off");
+
+      // Initialize UI
+      highEl.textContent = highScore;
+
+      /**
+       * Visual Juice: Confetti & Particle Blast
+       * Fires celebratory particle bursts on high achievement (8/10+ in Daily, or high score in Endless)
+       */
+      function triggerConfetti() {
+        if (typeof confetti === "function") {
+          // Central dynamic fountain
+          confetti({
+            particleCount: 85,
+            spread: 75,
+            origin: { y: 0.55 },
+            colors: ["#10b981", "#38bdf8", "#fbbf24", "#f43f5e", "#a855f7"]
+          });
+          // Dual side celebratory cannons
+          setTimeout(() => {
+            confetti({
+              particleCount: 45,
+              angle: 60,
+              spread: 60,
+              origin: { x: 0.1, y: 0.65 },
+              colors: ["#10b981", "#38bdf8", "#fbbf24"]
+            });
+            confetti({
+              particleCount: 45,
+              angle: 120,
+              spread: 60,
+              origin: { x: 0.9, y: 0.65 },
+              colors: ["#38bdf8", "#fbbf24", "#f43f5e"]
+            });
+          }, 250);
+        }
+      }
+
+      /**
+       * Visual Juice: Animated Number Counter
+       * Rapidly rolls integer numbers up from 0 to target with easing and sound ticks
+       */
+      function animateCounter(el, target, duration = 800, onStep, onComplete) {
+        if (!el) return;
+        const start = 0;
+        const startTime = performance.now();
+        let lastVal = -1;
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          // Cubic ease-out
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(start + (target - start) * ease);
+
+          if (current !== lastVal) {
+            el.textContent = current;
+            if (onStep && current > 0) onStep(current);
+            lastVal = current;
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            el.textContent = target;
+            if (onComplete) onComplete();
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      /**
+       * Visual Juice: Animated Stat Counter
+       * Rapidly rolls decimal/locale country statistics from 0 to target
+       */
+      function animateStatCounter(el, targetVal, decimals = 0, duration = 600) {
+        if (!el) return;
+        const start = 0;
+        const startTime = performance.now();
+
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const current = start + (targetVal - start) * ease;
+
+          if (decimals === 0) {
+            el.textContent = Math.round(current).toLocaleString();
+          } else {
+            el.textContent = current.toFixed(decimals);
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            if (decimals === 0) {
+              el.textContent = Math.round(targetVal).toLocaleString();
+            } else {
+              el.textContent = targetVal.toFixed(decimals);
+            }
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      /**
+       * Seeded Deterministic Generator for Daily Challenge
+       * All players on the same day get the exact same 10 matchups in the same order.
+       */
+      function getDailyDateKey() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        return `${year}-${month}-${day}`;
+      }
+
+      function getDailyChallengeNumber() {
+        const epoch = new Date(2026, 0, 1);
+        const now = new Date();
+        const diffDays = Math.floor((now - epoch) / (1000 * 60 * 60 * 24)) + 1;
+        return Math.max(1, diffDays);
+      }
+
+      function createSeededRandom(seedStr) {
+        let h = 2166136261 >>> 0;
+        for (let i = 0; i < seedStr.length; i++) {
+          h = Math.imul(h ^ seedStr.charCodeAt(i), 16777619);
+        }
+        let s = h;
+        return function() {
+          s = (s + 0x6D2B79F5) | 0;
+          let t = Math.imul(s ^ (s >>> 15), 1 | s);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        };
+      }
+
+      function generateDailyMatchups(dateKey) {
+        const rng = createSeededRandom("csb-daily-" + dateKey);
+        const catKeys = Object.keys(CATEGORIES);
+        // Deterministically shuffle categories
+        for (let i = catKeys.length - 1; i > 0; i--) {
+          const j = Math.floor(rng() * (i + 1));
+          [catKeys[i], catKeys[j]] = [catKeys[j], catKeys[i]];
+        }
+        const matchups = [];
+        for (let i = 0; i < 10; i++) {
+          const catKey = catKeys[i % catKeys.length];
+          const countryA = COUNTRIES[Math.floor(rng() * COUNTRIES.length)];
+          let countryB;
+          let attempts = 0;
+          do {
+            countryB = COUNTRIES[Math.floor(rng() * COUNTRIES.length)];
+            attempts++;
+          } while (
+            (countryB.code === countryA.code || countryB[catKey] === countryA[catKey]) &&
+            attempts < 30
+          );
+          matchups.push({
+            round: i + 1,
+            catKey: catKey,
+            countryA: countryA,
+            countryB: countryB
+          });
+        }
+        return matchups;
+      }
+
+      function loadSavedDailyChoices() {
+        const saved = localStorage.getItem("csb_daily_completed_" + todayDateKey);
+        if (saved) {
+          try {
+            return JSON.parse(saved).choices || [];
+          } catch (e) {
+            return [];
+          }
+        }
+        const inProgress = localStorage.getItem("csb_daily_in_progress_" + todayDateKey);
+        if (inProgress) {
+          try {
+            return JSON.parse(inProgress) || [];
+          } catch (e) {
+            return [];
+          }
+        }
+        return [];
+      }
+
+      function updateCategoryBanner() {
+        curCatIcon.textContent = activeCategory.icon;
+        curCatName.textContent = activeCategory.name;
+        curCatUnit.textContent = activeCategory.unit;
+        unitA.textContent = activeCategory.unit;
+        unitB.textContent = activeCategory.unit;
+
+        if (categoryBanner) {
+          categoryBanner.classList.remove("animate-pop");
+          void categoryBanner.offsetWidth; // trigger reflow
+          categoryBanner.classList.add("animate-pop");
+        }
+      }
+
+      function handleFlagError(imgEl, countryCode) {
+        imgEl.onerror = null;
+        imgEl.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="106" viewBox="0 0 160 106"><rect width="100%" height="100%" fill="%23334155"/><text x="50%" y="54%" font-family="sans-serif" font-weight="bold" font-size="28" fill="%2394a3b8" dominant-baseline="middle" text-anchor="middle">${countryCode.toUpperCase()}</text></svg>`;
+      }
+
+      function handleShapeError(imgEl, countryCode) {
+        imgEl.onerror = null;
+        imgEl.src = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80" viewBox="0 0 120 80"><rect width="100%" height="100%" fill="%231e293b"/><circle cx="60" cy="40" r="26" fill="none" stroke="%2310b981" stroke-width="1.5" stroke-dasharray="3,3"/><circle cx="60" cy="40" r="14" fill="none" stroke="%2310b981" stroke-width="1" opacity="0.6"/><text x="60" y="44" font-family="sans-serif" font-weight="bold" font-size="14" fill="%2334d399" text-anchor="middle">${countryCode.toUpperCase()}</text></svg>`;
+      }
+
+      function getRandomCountry(exclude = []) {
+        const pool = COUNTRIES.filter(c => !exclude.some(e => e && e.code === c.code));
+        return pool[Math.floor(Math.random() * pool.length)];
+      }
+
+      function getFlagUrl(code) {
+        return `https://flagcdn.com/w160/${code.toLowerCase()}.png`;
+      }
+
+      function getShapeUrl(code) {
+        return `https://cdn.jsdelivr.net/gh/djaiss/mapsicon@master/all/${code.toLowerCase()}/vector.svg`;
+      }
+
+      /**
+       * Mode Switching
+       */
+      function switchMode(newMode) {
+        gameMode = newMode;
+        isBusy = false;
+
+        if (newMode === "endless") {
+          // Tab styles
+          tabEndless.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-emerald-600 text-white shadow cursor-pointer";
+          tabDaily.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 cursor-pointer";
+
+          // Header stats
+          endlessStatsGroup.classList.remove("hidden");
+          endlessStatsGroup.classList.add("flex");
+          dailyStatsGroup.classList.remove("flex");
+          dailyStatsGroup.classList.add("hidden");
+
+          // Screens
+          dailyProgressContainer.classList.remove("flex");
+          dailyProgressContainer.classList.add("hidden");
+          dailyScorecardScreen.classList.remove("flex");
+          dailyScorecardScreen.classList.add("hidden");
+
+          if (streak === 0 && gameOverScreen.classList.contains("flex")) {
+            gameView.classList.add("hidden");
+          } else {
+            gameOverScreen.classList.remove("flex");
+            gameOverScreen.classList.add("hidden");
+            gameView.classList.remove("hidden");
+            setupRound(false);
+          }
+        } else {
+          // Daily Mode
+          tabDaily.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-sky-600 text-white shadow cursor-pointer";
+          tabEndless.className = "px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 cursor-pointer";
+
+          // Header stats
+          endlessStatsGroup.classList.remove("flex");
+          endlessStatsGroup.classList.add("hidden");
+          dailyStatsGroup.classList.remove("hidden");
+          dailyStatsGroup.classList.add("flex");
+
+          // Hide game over screen
+          gameOverScreen.classList.remove("flex");
+          gameOverScreen.classList.add("hidden");
+
+          // If daily challenge is complete for today, show scorecard
+          const isCompleted = localStorage.getItem("csb_daily_completed_" + todayDateKey) || dailyChoices.length >= 10;
+          if (isCompleted && dailyChoices.length >= 10) {
+            showDailyScorecard();
+          } else {
+            dailyScorecardScreen.classList.remove("flex");
+            dailyScorecardScreen.classList.add("hidden");
+            gameView.classList.remove("hidden");
+            dailyProgressContainer.classList.remove("hidden");
+            dailyProgressContainer.classList.add("flex");
+            renderDailyRound();
+          }
+        }
+      }
+
+      /**
+       * Endless Mode Round Setup
+       */
+      function setupRound(keepBAsA = false) {
+        const keys = Object.keys(CATEGORIES);
+        const nextKeys = keys.filter(k => k !== currentCategoryKey);
+        currentCategoryKey = nextKeys[Math.floor(Math.random() * nextKeys.length)];
+        activeCategory = CATEGORIES[currentCategoryKey];
+        updateCategoryBanner();
+
+        if (keepBAsA && countryB) {
+          countryA = countryB;
+        } else {
+          countryA = getRandomCountry();
+        }
+
+        let attempts = 0;
+        do {
+          countryB = getRandomCountry([countryA]);
+          attempts++;
+        } while (countryB[currentCategoryKey] === countryA[currentCategoryKey] && attempts < 10);
+
+        // Render Country A Flag & Shape
+        flagA.onerror = () => handleFlagError(flagA, countryA.code);
+        flagA.src = getFlagUrl(countryA.code);
+        flagA.alt = `${countryA.name} flag`;
+
+        shapeA.onerror = () => handleShapeError(shapeA, countryA.code);
+        shapeA.src = getShapeUrl(countryA.code);
+        shapeA.alt = `${countryA.name} map shape outline`;
+
+        nameA.textContent = countryA.name;
+        valueA.textContent = activeCategory.formatVal(countryA[currentCategoryKey]);
+        unitA.textContent = activeCategory.unit;
+
+        // Render Country B Hidden State
+        flagB.onerror = () => handleFlagError(flagB, countryB.code);
+        flagB.src = getFlagUrl(countryB.code);
+        flagB.alt = `${countryB.name} flag`;
+
+        shapeB.onerror = () => handleShapeError(shapeB, countryB.code);
+        shapeB.src = getShapeUrl(countryB.code);
+        shapeB.alt = `${countryB.name} map shape outline`;
+
+        nameB.textContent = countryB.name;
+        valueB.textContent = "???";
+        valueB.className = "tabular-nums font-display text-4xl sm:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200";
+        unitB.textContent = activeCategory.unit;
+        compCountryName.textContent = countryA.name;
+
+        resultFeedback.textContent = "";
+        resultFeedback.className = "text-xs font-bold uppercase tracking-wider mt-1 h-4 transition-all opacity-0";
+
+        // Reset borders
+        cardA.className = "card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300";
+        cardB.className = "card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300";
+
+        btnHigher.disabled = false;
+        btnLower.disabled = false;
+        btnHigher.classList.remove("opacity-50", "cursor-not-allowed");
+        btnLower.classList.remove("opacity-50", "cursor-not-allowed");
+        isBusy = false;
+      }
+
+      function animateValue(targetVal, duration = 600, callback) {
+        const startTime = performance.now();
+        const startVal = 0;
+        const decimals = activeCategory.decimals;
+
+        let lastTick = 0;
+        function update(currentTime) {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const ease = 1 - Math.pow(1 - progress, 3);
+          const current = startVal + (targetVal - startVal) * ease;
+
+          if (decimals === 0) {
+            valueB.textContent = Math.round(current).toLocaleString();
+          } else {
+            valueB.textContent = current.toFixed(decimals);
+          }
+
+          if (currentTime - lastTick > 70) {
+            sfx.tick();
+            lastTick = currentTime;
+          }
+
+          if (progress < 1) {
+            requestAnimationFrame(update);
+          } else {
+            valueB.textContent = activeCategory.formatVal(targetVal);
+            if (callback) callback();
+          }
+        }
+
+        requestAnimationFrame(update);
+      }
+
+      /**
+       * Endless Mode Guess Handler
+       * Reveals Country B stat, plays green/red feedback, updates streak.
+       */
+      function handleGuess(guessType) {
+        if (isBusy) return;
+        isBusy = true;
+        sfx.init();
+        sfx.click(); // Tactile click when picking Higher/Lower
+
+        btnHigher.disabled = true;
+        btnLower.disabled = true;
+        btnHigher.classList.add("opacity-50", "cursor-not-allowed");
+        btnLower.classList.add("opacity-50", "cursor-not-allowed");
+
+        const valA = countryA[currentCategoryKey];
+        const valB = countryB[currentCategoryKey];
+
+        const isHigher = valB >= valA;
+        const isLower = valB <= valA;
+        const isCorrect = (guessType === "higher" && isHigher) || (guessType === "lower" && isLower);
+
+        animateValue(valB, 650, () => {
+          if (isCorrect) {
+            roundHistory.push("correct");
+            streak++;
+            streakEl.textContent = streak;
+            streakEl.classList.add("scale-125");
+            setTimeout(() => streakEl.classList.remove("scale-125"), 200);
+
+            if (streak >= 3) {
+              fireIcon.classList.remove("opacity-40");
+              fireIcon.classList.add("opacity-100", "scale-110");
+            }
+
+            if (streak > highScore) {
+              highScore = streak;
+              localStorage.setItem("csb_high_score", highScore.toString());
+              highEl.textContent = highScore;
+              if (streak >= 5) {
+                triggerConfetti();
+              }
+            }
+
+            sfx.correct();
+
+            cardB.classList.remove("border-slate-700/80");
+            cardB.classList.add("ring-4", "ring-emerald-500", "border-emerald-500");
+            valueB.classList.remove("text-amber-300");
+            valueB.classList.add("text-emerald-400");
+
+            resultFeedback.textContent = `Correct! ${valB > valA ? "Higher" : valB < valA ? "Lower" : "Equal"}`;
+            resultFeedback.className = "text-xs font-bold uppercase tracking-wider mt-1 h-4 text-emerald-400 opacity-100 transition-all";
+
+            setTimeout(() => {
+              setupRound(true);
+            }, 1100);
+          } else {
+            roundHistory.push("incorrect");
+            sfx.errorBuzz();
+
+            cardB.classList.remove("border-slate-700/80");
+            cardB.classList.add("ring-4", "ring-rose-500", "border-rose-500", "animate-shake");
+            valueB.classList.remove("text-amber-300");
+            valueB.classList.add("text-rose-400");
+
+            resultFeedback.textContent = `Incorrect! (${activeCategory.formatVal(valB)} vs ${activeCategory.formatVal(valA)})`;
+            resultFeedback.className = "text-xs font-bold uppercase tracking-wider mt-1 h-4 text-rose-400 opacity-100 transition-all";
+
+            setTimeout(() => {
+              showGameOver();
+            }, 1200);
+          }
+        });
+      }
+
+      function showGameOver() {
+        gameView.classList.add("hidden");
+        gameOverScreen.classList.remove("hidden");
+        gameOverScreen.classList.add("flex");
+
+        finalStreakEl.textContent = "0";
+        finalHighEl.textContent = highScore;
+        // Animated counter roll-up for the final streak
+        animateCounter(finalStreakEl, streak, 650, () => sfx.tick());
+
+        const valA = countryA[currentCategoryKey];
+        const valB = countryB[currentCategoryKey];
+        gameOverMsg.textContent = `${countryB.name} has ${activeCategory.format(valB)}, while ${countryA.name} has ${activeCategory.format(valA)}.`;
+
+        if (streak > 0 && streak === highScore) {
+          sfx.celebrate();
+          if (streak >= 5) {
+            triggerConfetti();
+          }
+        }
+      }
+
+      function restartGame() {
+        streak = 0;
+        streakEl.textContent = "0";
+        fireIcon.classList.remove("opacity-100", "scale-110");
+        fireIcon.classList.add("opacity-40");
+        roundHistory = [];
+        shareToast.classList.add("opacity-0");
+
+        gameOverScreen.classList.remove("flex");
+        gameOverScreen.classList.add("hidden");
+        gameView.classList.remove("hidden");
+
+        setupRound(false);
+      }
+
+      function shareResult() {
+        const blocks = roundHistory.map(res => res === "correct" ? "🟩" : "🟥").join("");
+        const text = `🌍 Country Stat Battles | I reached a streak of ${streak}! (Best: ${highScore})\n${blocks}\nCan you beat my score? ${window.location.href}`;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            shareToast.classList.remove("opacity-0");
+            shareToast.classList.add("opacity-100");
+            setTimeout(() => {
+              shareToast.classList.remove("opacity-100");
+              shareToast.classList.add("opacity-0");
+            }, 3000);
+          }).catch(() => fallbackShare(text));
+        } else {
+          fallbackShare(text);
+        }
+      }
+
+      function fallbackShare(text) {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        shareToast.classList.remove("opacity-0");
+        shareToast.classList.add("opacity-100");
+        setTimeout(() => {
+          shareToast.classList.remove("opacity-100");
+          shareToast.classList.add("opacity-0");
+        }, 3000);
+      }
+
+      /**
+       * Daily Challenge Mode Gameplay
+       * 1. 10 rounds: no reveals, no green/red interruption, records choice
+       * 2. Progress bar shows generic 🟦 for answered rounds, ⬜ for upcoming
+       * 3. Round 10 complete: shows reveal & detailed scorecard modal
+       */
+      function renderDailyRound() {
+        const currentIdx = dailyChoices.length;
+        if (currentIdx >= 10) {
+          showDailyScorecard();
+          return;
+        }
+
+        const matchup = dailyMatchups[currentIdx];
+        currentCategoryKey = matchup.catKey;
+        activeCategory = CATEGORIES[matchup.catKey];
+        updateCategoryBanner();
+
+        countryA = matchup.countryA;
+        countryB = matchup.countryB;
+
+        // Date and round headers
+        const todayDate = new Date();
+        dailyDateLabel.textContent = todayDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        dailyRoundLabel.textContent = `Round ${currentIdx + 1} of 10`;
+        dailyHeaderLabel.textContent = `Round ${currentIdx + 1}/10`;
+
+        renderDailyProgressBlocks();
+
+        // Render Country A Flag & Shape
+        flagA.onerror = () => handleFlagError(flagA, countryA.code);
+        flagA.src = getFlagUrl(countryA.code);
+        flagA.alt = `${countryA.name} flag`;
+
+        shapeA.onerror = () => handleShapeError(shapeA, countryA.code);
+        shapeA.src = getShapeUrl(countryA.code);
+        shapeA.alt = `${countryA.name} map shape outline`;
+
+        nameA.textContent = countryA.name;
+        valueA.textContent = activeCategory.formatVal(countryA[currentCategoryKey]);
+        unitA.textContent = activeCategory.unit;
+
+        // Render Country B Hidden State (Never reveal during the 10 rounds!)
+        flagB.onerror = () => handleFlagError(flagB, countryB.code);
+        flagB.src = getFlagUrl(countryB.code);
+        flagB.alt = `${countryB.name} flag`;
+
+        shapeB.onerror = () => handleShapeError(shapeB, countryB.code);
+        shapeB.src = getShapeUrl(countryB.code);
+        shapeB.alt = `${countryB.name} map shape outline`;
+
+        nameB.textContent = countryB.name;
+        valueB.textContent = "???";
+        valueB.className = "tabular-nums font-display text-4xl sm:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200";
+        unitB.textContent = activeCategory.unit;
+        compCountryName.textContent = countryA.name;
+
+        resultFeedback.textContent = "";
+        resultFeedback.className = "text-xs font-bold uppercase tracking-wider mt-1 h-4 transition-all opacity-0";
+
+        // Clean borders
+        cardA.className = "card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300";
+        cardB.className = "card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300";
+
+        btnHigher.disabled = false;
+        btnLower.disabled = false;
+        btnHigher.classList.remove("opacity-50", "cursor-not-allowed");
+        btnLower.classList.remove("opacity-50", "cursor-not-allowed");
+        isBusy = false;
+      }
+
+      function renderDailyProgressBlocks() {
+        dailyProgressBlocks.innerHTML = "";
+        const currentIdx = dailyChoices.length;
+
+        for (let i = 0; i < 10; i++) {
+          const block = document.createElement("div");
+          if (i < currentIdx) {
+            // Completed generic indicator (answers remain hidden)
+            block.className = "h-8 rounded-lg bg-sky-500 border border-sky-400 text-white font-black text-xs flex items-center justify-center shadow-sm select-none transition-all";
+            block.textContent = "✓";
+            block.title = `Round ${i + 1}: Answered`;
+          } else if (i === currentIdx) {
+            // Current active round
+            block.className = "h-8 rounded-lg bg-slate-800 border-2 border-sky-400 text-sky-300 font-extrabold text-xs flex items-center justify-center ring-2 ring-sky-400/40 animate-pulse shadow-md select-none transition-all";
+            block.textContent = `${i + 1}`;
+            block.title = `Round ${i + 1}: Active`;
+          } else {
+            // Upcoming round
+            block.className = "h-8 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-500 font-semibold text-xs flex items-center justify-center select-none transition-all";
+            block.textContent = `${i + 1}`;
+            block.title = `Round ${i + 1}`;
+          }
+          dailyProgressBlocks.appendChild(block);
+        }
+      }
+
+      function handleDailyGuess(guessType) {
+        if (isBusy) return;
+        isBusy = true;
+        sfx.init();
+        sfx.click(); // Tactile click when picking Higher/Lower
+
+        btnHigher.disabled = true;
+        btnLower.disabled = true;
+        btnHigher.classList.add("opacity-50", "cursor-not-allowed");
+        btnLower.classList.add("opacity-50", "cursor-not-allowed");
+
+        // Record player choice without revealing Country B stat
+        dailyChoices.push(guessType);
+        localStorage.setItem("csb_daily_in_progress_" + todayDateKey, JSON.stringify(dailyChoices));
+
+        // Smooth quick transition between rounds (160ms)
+        cardB.classList.add("opacity-60", "scale-[0.99]");
+
+        setTimeout(() => {
+          cardB.classList.remove("opacity-60", "scale-[0.99]");
+          if (dailyChoices.length < 10) {
+            renderDailyRound();
+          } else {
+            // All 10 rounds answered -> Complete & Reveal Scorecard!
+            completeDailyChallenge();
+          }
+        }, 160);
+      }
+
+      function completeDailyChallenge() {
+        localStorage.removeItem("csb_daily_in_progress_" + todayDateKey);
+        const resultData = {
+          dateKey: todayDateKey,
+          choices: dailyChoices,
+          completedAt: new Date().toISOString()
+        };
+        localStorage.setItem("csb_daily_completed_" + todayDateKey, JSON.stringify(resultData));
+
+        // Dramatic drum roll building suspense on final reveal transition
+        sfx.drumRoll(0.95);
+        setTimeout(() => {
+          showDailyScorecard();
+        }, 250);
+      }
+
+      /**
+       * End-of-Game Reveal & Scorecard Screen
+       */
+      function showDailyScorecard() {
+        gameView.classList.add("hidden");
+        dailyProgressContainer.classList.remove("flex");
+        dailyProgressContainer.classList.add("hidden");
+        gameOverScreen.classList.remove("flex");
+        gameOverScreen.classList.add("hidden");
+
+        dailyScorecardScreen.classList.remove("hidden");
+        dailyScorecardScreen.classList.add("flex");
+
+        let score = 0;
+        const gridBlocks = [];
+        dailyScorecardList.innerHTML = "";
+
+        dailyMatchups.forEach((m, idx) => {
+          const choice = dailyChoices[idx] || "higher";
+          const cat = CATEGORIES[m.catKey];
+          const valA = m.countryA[m.catKey];
+          const valB = m.countryB[m.catKey];
+
+          const isHigher = valB >= valA;
+          const isLower = valB <= valA;
+          const isCorrect = (choice === "higher" && isHigher) || (choice === "lower" && isLower);
+
+          if (isCorrect) score++;
+          gridBlocks.push(isCorrect ? "🟩" : "🟥");
+
+          const item = document.createElement("div");
+          item.className = `p-3.5 sm:p-4 rounded-2xl border ${
+            isCorrect ? "border-emerald-500/40 bg-emerald-950/20" : "border-rose-500/40 bg-rose-950/20"
+          } flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all animate-pop`;
+          item.style.animationDelay = `${idx * 40}ms`;
+
+          const choiceLabel = choice === "higher" ? "HIGHER ▲" : "LOWER ▼";
+          const comparisonText = valB > valA ? "HIGHER ▲" : valB < valA ? "LOWER ▼" : "EQUAL";
+
+          item.innerHTML = `
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+                <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full ${
+                  isCorrect ? "bg-emerald-900/60 text-emerald-300 border border-emerald-700/50" : "bg-rose-900/60 text-rose-300 border border-rose-700/50"
+                }">
+                  Round ${idx + 1}
+                </span>
+                <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
+                  <span>${cat.icon}</span>
+                  <span>${cat.name}</span>
+                </span>
+              </div>
+              
+              <div class="flex flex-wrap items-center gap-2 text-xs sm:text-sm text-slate-200">
+                <div class="flex items-center gap-1.5 font-bold">
+                  <img src="${getFlagUrl(m.countryA.code)}" class="w-5 h-3.5 object-cover rounded shadow-sm border border-white/20" alt="${m.countryA.name} flag" />
+                  <span>${m.countryA.name}</span>
+                  <span class="text-slate-400 font-mono font-normal">(<span id="daily-stat-a-${idx}">0</span> ${cat.unit})</span>
+                </div>
+                <span class="text-slate-500 font-bold text-xs">vs</span>
+                <div class="flex items-center gap-1.5 font-bold">
+                  <img src="${getFlagUrl(m.countryB.code)}" class="w-5 h-3.5 object-cover rounded shadow-sm border border-white/20" alt="${m.countryB.name} flag" />
+                  <span class="${isCorrect ? "text-emerald-300" : "text-rose-300"}">${m.countryB.name}</span>
+                  <span class="font-mono font-semibold ${isCorrect ? "text-emerald-400" : "text-rose-400"}">(<span id="daily-stat-b-${idx}">0</span> ${cat.unit})</span>
+                </div>
+              </div>
+              
+              <div class="mt-1.5 text-[11px] text-slate-400 flex items-center gap-2">
+                <span>You chose: <span class="font-bold ${choice === "higher" ? "text-emerald-300" : "text-rose-300"}">${choiceLabel}</span></span>
+                <span class="text-slate-600">·</span>
+                <span>Actual: <span class="font-semibold text-slate-200">${comparisonText}</span></span>
+              </div>
+            </div>
+            
+            <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-1">
+              <span class="inline-flex items-center gap-1 px-3 py-1 rounded-lg text-xs font-bold ${
+                isCorrect ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/40" : "bg-rose-500/20 text-rose-400 border border-rose-500/40"
+              }">
+                <span>${isCorrect ? "🟩" : "🟥"}</span>
+                <span>${isCorrect ? "CORRECT" : "INCORRECT"}</span>
+              </span>
+            </div>
+          `;
+          dailyScorecardList.appendChild(item);
+        });
+
+        // Trigger animated roll-up counters for all matchup stats
+        dailyMatchups.forEach((m, idx) => {
+          const cat = CATEGORIES[m.catKey];
+          const elA = document.getElementById(`daily-stat-a-${idx}`);
+          const elB = document.getElementById(`daily-stat-b-${idx}`);
+          animateStatCounter(elA, m.countryA[m.catKey], cat.decimals, 450 + idx * 30);
+          animateStatCounter(elB, m.countryB[m.catKey], cat.decimals, 450 + idx * 30);
+        });
+
+        // Overall Score & 10-box Wordle grid setup
+        dailyFinalScore.textContent = "0";
+        dailyHeaderLabel.textContent = `Score: 0/10`;
+        const gridStr = gridBlocks.join("");
+        dailyGridEmoji.textContent = gridStr;
+
+        const challengeNum = getDailyChallengeNumber();
+        const dateFormatted = new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        dailyScorecardSubtitle.textContent = `${dateFormatted} · Challenge #${challengeNum}`;
+        dailyRankFeedback.textContent = "Tallying results...";
+
+        // Animate score number rolling up rapidly with satisfying chimes on each step
+        animateCounter(dailyFinalScore, score, 850, (currentScore) => {
+          sfx.chime(0.85 + (currentScore / 10) * 0.45);
+          dailyHeaderLabel.textContent = `Score: ${currentScore}/10`;
+        }, () => {
+          dailyHeaderLabel.textContent = `Score: ${score}/10`;
+
+          if (score === 10) {
+            dailyRankFeedback.textContent = "🏆 Master of World Geography! Perfect 10 / 10!";
+            dailyRankFeedback.className = "text-xs font-bold text-amber-300";
+            sfx.celebrate();
+            triggerConfetti();
+          } else if (score >= 8) {
+            dailyRankFeedback.textContent = "🌟 Outstanding Knowledge! You know your world stats!";
+            dailyRankFeedback.className = "text-xs font-bold text-emerald-300";
+            sfx.celebrate();
+            triggerConfetti();
+          } else if (score >= 5) {
+            dailyRankFeedback.textContent = "👏 Great effort! Solid global statistical intuition!";
+            dailyRankFeedback.className = "text-xs font-bold text-sky-300";
+            sfx.chime(1.3);
+          } else {
+            dailyRankFeedback.textContent = "🌍 Tricky questions today! Sharpen up in Endless Mode!";
+            dailyRankFeedback.className = "text-xs font-bold text-slate-300";
+            sfx.errorBuzz();
+          }
+        });
+      }
+
+      function shareDailyResult() {
+        const challengeNum = getDailyChallengeNumber();
+        const dateFormatted = new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        const score = dailyFinalScore.textContent;
+        const gridStr = dailyGridEmoji.textContent.trim();
+        const text = `🌍 Country Stat Battles | Daily #${challengeNum} (${dateFormatted})\nScore: ${score} / 10\n${gridStr}\nCan you beat my score? ${window.location.href}`;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(() => {
+            dailyShareToast.classList.remove("opacity-0");
+            dailyShareToast.classList.add("opacity-100");
+            setTimeout(() => {
+              dailyShareToast.classList.remove("opacity-100");
+              dailyShareToast.classList.add("opacity-0");
+            }, 3000);
+          }).catch(() => fallbackDailyShare(text));
+        } else {
+          fallbackDailyShare(text);
+        }
+      }
+
+      function fallbackDailyShare(text) {
+        const temp = document.createElement("textarea");
+        temp.value = text;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand("copy");
+        document.body.removeChild(temp);
+        dailyShareToast.classList.remove("opacity-0");
+        dailyShareToast.classList.add("opacity-100");
+        setTimeout(() => {
+          dailyShareToast.classList.remove("opacity-100");
+          dailyShareToast.classList.add("opacity-0");
+        }, 3000);
+      }
+
+      function retryDailyPractice() {
+        dailyChoices = [];
+        dailyScorecardScreen.classList.remove("flex");
+        dailyScorecardScreen.classList.add("hidden");
+        gameView.classList.remove("hidden");
+        dailyProgressContainer.classList.remove("hidden");
+        dailyProgressContainer.classList.add("flex");
+        renderDailyRound();
+      }
+
+      function updateDailyCountdown() {
+        if (!dailyCountdown) return;
+        const now = new Date();
+        const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+        const diffMs = tomorrow - now;
+        const hours = Math.floor(diffMs / (1000 * 60 * 60));
+        const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diffMs % (1000 * 60)) / 1000);
+        dailyCountdown.textContent = `${String(hours).padStart(2, "0")}:${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+      }
+      setInterval(updateDailyCountdown, 1000);
+      updateDailyCountdown();
+
+      // Event Listeners for Guess Buttons
+      btnHigher.addEventListener("click", () => {
+        if (gameMode === "daily") {
+          handleDailyGuess("higher");
+        } else {
+          handleGuess("higher");
+        }
+      });
+
+      btnLower.addEventListener("click", () => {
+        if (gameMode === "daily") {
+          handleDailyGuess("lower");
+        } else {
+          handleGuess("lower");
+        }
+      });
+
+      // Navigation & Mode Tabs
+      tabEndless.addEventListener("click", () => switchMode("endless"));
+      tabDaily.addEventListener("click", () => switchMode("daily"));
+
+      // Endless Buttons
+      btnPlayAgain.addEventListener("click", restartGame);
+      btnShareResult.addEventListener("click", shareResult);
+      if (btnTryDailyFromGameOver) {
+        btnTryDailyFromGameOver.addEventListener("click", () => switchMode("daily"));
+      }
+
+      // Daily Buttons
+      btnDailyShare.addEventListener("click", shareDailyResult);
+      btnDailyToEndless.addEventListener("click", () => switchMode("endless"));
+      if (btnDailyRetry) {
+        btnDailyRetry.addEventListener("click", retryDailyPractice);
+      }
+
+      // Sound Toggle
+      soundToggleBtn.addEventListener("click", () => {
+        sfx.enabled = !sfx.enabled;
+        soundIconOn.classList.toggle("hidden", !sfx.enabled);
+        soundIconOff.classList.toggle("hidden", sfx.enabled);
+      });
+
+      // Keyboard Controls
+      window.addEventListener("keydown", (e) => {
+        if (!dailyScorecardScreen.classList.contains("hidden")) {
+          return;
+        }
+
+        if (gameView.classList.contains("hidden")) {
+          if (e.key === "Enter" || e.key === " ") {
+            restartGame();
+          }
+          return;
+        }
+
+        if (isBusy) return;
+
+        if (e.key === "ArrowUp" || e.key.toLowerCase() === "h") {
+          e.preventDefault();
+          if (gameMode === "daily") {
+            handleDailyGuess("higher");
+          } else {
+            handleGuess("higher");
+          }
+        } else if (e.key === "ArrowDown" || e.key.toLowerCase() === "l") {
+          e.preventDefault();
+          if (gameMode === "daily") {
+            handleDailyGuess("lower");
+          } else {
+            handleGuess("lower");
+          }
+        }
+      });
+
+      // Start initial game in Endless Mode
+      setupRound(false);
+    </script>
+  </body>
+</html>
