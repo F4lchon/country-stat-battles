@@ -2,12 +2,22 @@
 <html lang="en" class="h-full">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"
+    />
     <title>Country Stat Battles – Higher or Lower World Stats Game</title>
     <meta
       name="description"
       content="Test your geography knowledge in Country Stat Battles! Guess whether countries have higher or lower population density, coffee consumption, and more."
     />
+    <meta name="theme-color" content="#0b1120" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Country Stats" />
+    <meta name="format-detection" content="telephone=no" />
     <meta property="og:title" content="Country Stat Battles – Higher or Lower World Stats Game" />
     <meta
       property="og:description"
@@ -102,10 +112,31 @@
     <style>
       @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Cabinet+Grotesk:wght@700;800;900&display=swap');
 
+      :root {
+        --sat: env(safe-area-inset-top, 0px);
+        --sab: env(safe-area-inset-bottom, 0px);
+        --sal: env(safe-area-inset-left, 0px);
+        --sar: env(safe-area-inset-right, 0px);
+      }
+
+      html {
+        height: -webkit-fill-available;
+        -webkit-text-size-adjust: 100%;
+        text-size-adjust: 100%;
+        overscroll-behavior-y: none;
+      }
+
       body {
-        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+        font-family: 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         background-color: #0b1120;
         color: #f8fafc;
+        min-height: 100vh;
+        min-height: 100dvh;
+        min-height: -webkit-fill-available;
+        overscroll-behavior-y: none;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
       }
 
       .font-display {
@@ -126,6 +157,46 @@
         font-variant-numeric: tabular-nums;
       }
 
+      /* Touch & mobile interaction optimizations */
+      button, a, select, input, [role="button"] {
+        touch-action: manipulation;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .no-select {
+        -webkit-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+      }
+
+      /* Safe area insets utilities */
+      .pt-safe {
+        padding-top: max(0.5rem, env(safe-area-inset-top, 0px));
+      }
+
+      .pb-safe {
+        padding-bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+      }
+
+      .px-safe {
+        padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
+        padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+      }
+
+      /* Responsive landscape mode on phones (height <= 520px) */
+      @media (orientation: landscape) and (max-height: 520px) {
+        .landscape-compact-shape {
+          height: 4.75rem !important;
+        }
+        .landscape-compact-card {
+          padding: 0.65rem 0.85rem !important;
+        }
+        .landscape-compact-header {
+          min-height: 3rem !important;
+          height: 3rem !important;
+        }
+      }
+
       /* Scrollbar polish */
       ::-webkit-scrollbar {
         width: 6px;
@@ -139,60 +210,61 @@
       }
     </style>
   </head>
-  <body class="min-h-full flex flex-col bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-white">
+  <body class="min-h-full min-h-[100dvh] flex flex-col bg-slate-950 text-slate-100 selection:bg-emerald-500 selection:text-white overflow-x-hidden">
     <!-- Header -->
-    <header class="w-full border-b border-slate-800/80 bg-slate-900/70 backdrop-blur-md sticky top-0 z-30">
-      <div class="max-w-5xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+    <header class="w-full border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-30 pt-safe px-safe">
+      <div class="max-w-5xl mx-auto px-2 sm:px-6 min-h-[3.75rem] h-auto py-2 sm:h-16 sm:py-0 flex items-center justify-between gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
         <!-- Brand -->
-        <div class="flex items-center gap-2.5">
-          <span class="text-2xl" aria-hidden="true">🌍</span>
+        <div class="flex items-center gap-2">
+          <span class="text-xl sm:text-2xl" aria-hidden="true">🌍</span>
           <div>
-            <h1 class="font-display font-extrabold text-lg sm:text-xl tracking-tight text-white leading-none">
+            <h1 class="font-display font-extrabold text-base sm:text-xl tracking-tight text-white leading-none whitespace-nowrap">
               Country Stat Battles
             </h1>
-            <p class="text-[11px] text-slate-400 font-medium hidden sm:block tracking-wide">
+            <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden sm:block tracking-wide">
               Higher or Lower Country Stats
             </p>
           </div>
         </div>
 
         <!-- Mode Switcher Tabs (Daily Challenge as Flagship Feature) -->
-        <div class="flex items-center p-1 bg-slate-800/90 border border-slate-700/80 rounded-xl shadow-inner">
+        <div class="flex items-center p-0.5 sm:p-1 bg-slate-800/90 border border-slate-700/80 rounded-xl shadow-inner no-select">
           <button
             id="tab-daily"
-            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-sky-600 text-white shadow cursor-pointer"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 bg-sky-600 text-white shadow cursor-pointer active:scale-95"
           >
             <span>🗓️</span>
             <span>Daily 5</span>
           </button>
           <button
             id="tab-endless"
-            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 cursor-pointer"
+            class="px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 text-slate-400 hover:text-slate-200 cursor-pointer active:scale-95"
           >
             <span>🔥</span>
-            <span>Endless Streak</span>
+            <span class="hidden min-[380px]:inline">Endless</span>
+            <span>Streak</span>
           </button>
         </div>
 
         <!-- Scores and Controls -->
-        <div class="flex items-center gap-2.5 sm:gap-4">
+        <div class="flex items-center gap-1.5 sm:gap-4">
           <!-- Daily Mode Status Indicator (Visible by default as flagship) -->
           <div id="daily-stats-group" class="flex items-center gap-2">
-            <div class="flex items-center gap-1.5 bg-sky-950/80 border border-sky-800/80 px-3 py-1.5 rounded-lg shadow-inner">
+            <div class="flex items-center gap-1.5 bg-sky-950/80 border border-sky-800/80 px-2.5 sm:px-3 py-1.5 rounded-lg shadow-inner">
               <span class="w-2 h-2 rounded-full bg-sky-400 animate-pulse"></span>
-              <span id="daily-header-label" class="text-xs font-bold text-sky-200 font-mono">Round 1/5</span>
+              <span id="daily-header-label" class="text-xs font-bold text-sky-200 font-mono whitespace-nowrap">Round 1/5</span>
             </div>
           </div>
 
           <!-- Endless Mode Stats (Hidden when in Daily Mode) -->
-          <div id="endless-stats-group" class="hidden items-center gap-2 sm:gap-3">
-            <div class="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 px-3 py-1.5 rounded-lg shadow-inner">
+          <div id="endless-stats-group" class="hidden items-center gap-1.5 sm:gap-3">
+            <div class="flex items-center gap-1.5 bg-slate-800/90 border border-slate-700/80 px-2.5 sm:px-3 py-1.5 rounded-lg shadow-inner">
               <span class="text-xs text-slate-400 font-medium">Streak:</span>
-              <span id="streak-score" class="tabular-nums font-bold text-emerald-400 text-base">0</span>
-              <span id="fire-icon" class="text-sm opacity-40 transition-opacity">🔥</span>
+              <span id="streak-score" class="tabular-nums font-bold text-emerald-400 text-sm sm:text-base">0</span>
+              <span id="fire-icon" class="text-xs sm:text-sm opacity-40 transition-opacity">🔥</span>
             </div>
 
-            <div class="hidden sm:flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg">
+            <div class="hidden md:flex items-center gap-1.5 bg-slate-800/60 border border-slate-700/60 px-3 py-1.5 rounded-lg">
               <span class="text-xs text-slate-400 font-medium">Best:</span>
               <span id="high-score" class="tabular-nums font-bold text-amber-300 text-base">0</span>
               <span class="text-xs text-amber-400">🏆</span>
@@ -202,7 +274,7 @@
           <!-- Sound Toggle -->
           <button
             id="sound-toggle-btn"
-            class="p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-colors"
+            class="w-9 h-9 sm:w-10 sm:h-10 p-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 active:scale-95 text-slate-300 border border-slate-700 transition-colors flex items-center justify-center cursor-pointer shrink-0"
             title="Toggle Sound Effects"
             aria-label="Toggle Sound Effects"
           >
@@ -214,35 +286,35 @@
     </header>
 
     <!-- Main Content Area -->
-    <main class="flex-1 flex flex-col items-center justify-center p-3 sm:p-6 w-full max-w-5xl mx-auto">
+    <main class="flex-1 flex flex-col items-center justify-center p-2.5 sm:p-5 md:p-6 w-full max-w-5xl mx-auto px-safe">
       <!-- Active Battle View -->
       <div id="game-view" class="w-full flex flex-col items-center">
         <!-- Daily Progress Bar (Visible by default in Daily Mode) -->
-        <div id="daily-progress-container" class="flex w-full max-w-lg mb-3 flex-col items-center animate-pop">
+        <div id="daily-progress-container" class="flex w-full max-w-lg mb-2.5 sm:mb-3 flex-col items-center animate-pop">
           <div class="flex items-center justify-between w-full px-1 mb-1.5 text-xs font-semibold text-slate-300">
             <span class="flex items-center gap-1.5">
               <span class="text-sky-400 font-bold">🗓️ Daily Challenge</span>
-              <span id="daily-date-label" class="text-slate-400"></span>
+              <span id="daily-date-label" class="text-slate-400 font-medium"></span>
             </span>
             <span id="daily-round-label" class="text-sky-300 font-mono font-bold">Question 1 of 5</span>
           </div>
           <!-- 5 blocks: completed (🟦), current (ring), upcoming (⬜) -->
           <div id="daily-progress-blocks" class="w-full grid grid-cols-5 gap-1.5 sm:gap-2"></div>
-          <p class="text-[11px] text-slate-400 mt-1.5 italic">
+          <p class="text-[11px] text-slate-400 mt-1.5 italic text-center">
             Answers remain hidden until all 5 questions are answered!
           </p>
         </div>
 
         <!-- Dynamic Category Banner (Changes Automatically Each Turn) -->
-        <div class="mb-4 text-center">
+        <div class="mb-3 sm:mb-4 text-center">
           <div
             id="category-banner"
-            class="inline-flex items-center gap-2 px-4 py-1.5 bg-slate-900/90 border border-slate-700/80 rounded-full shadow-lg text-xs sm:text-sm font-bold text-slate-200 transition-all duration-300"
+            class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-1.5 bg-slate-900/90 border border-slate-700/80 rounded-full shadow-lg text-xs sm:text-sm font-bold text-slate-200 transition-all duration-300"
           >
             <span class="text-[10px] sm:text-xs uppercase tracking-wider text-emerald-400 font-extrabold bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-800/60">
               Round Stat
             </span>
-            <span id="current-category-icon" class="text-base">👥</span>
+            <span id="current-category-icon" class="text-base" aria-hidden="true">👥</span>
             <span id="current-category-name" class="text-white">Population Density</span>
             <span class="text-slate-500 font-normal">·</span>
             <span id="current-category-unit" class="text-emerald-400 font-mono text-xs">people/km²</span>
@@ -250,70 +322,76 @@
         </div>
 
         <!-- Cards Container -->
-        <div class="relative w-full grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 items-stretch">
-          <!-- Center VS Circle Indicator (Desktop Overlay / Mobile Center) -->
-          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none hidden md:flex items-center justify-center w-12 h-12 rounded-full bg-slate-900 border-2 border-slate-700 text-white font-display font-black text-sm shadow-xl">
+        <div class="relative w-full grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-6 items-stretch">
+          <!-- Center VS Circle Indicator (Desktop Overlay) -->
+          <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none hidden md:flex items-center justify-center w-11 h-11 lg:w-12 lg:h-12 rounded-full bg-slate-900 border-2 border-slate-700 text-white font-display font-black text-xs lg:text-sm shadow-2xl">
             VS
           </div>
 
           <!-- Left Card: Country A (Revealed Base Country) -->
           <div
             id="card-a"
-            class="card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300"
+            class="card-gloss relative flex flex-col justify-between p-4 sm:p-6 md:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card"
           >
             <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
             <div class="flex flex-col items-center text-center">
               <!-- Country Map Shape (Top & Bigger) -->
-              <div class="w-full max-w-[270px] sm:max-w-[300px] h-36 sm:h-44 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+              <div class="w-full max-w-[240px] sm:max-w-[280px] md:max-w-[300px] h-28 sm:h-36 md:h-44 p-2.5 sm:p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group landscape-compact-shape">
                 <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#34d399_1px,transparent_1px)] [background-size:10px_10px]"></div>
                 <img
                   id="shape-a"
                   src="https://cdn.jsdelivr.net/gh/djaiss/mapsicon@master/all/jp/vector.svg"
                   alt="Japan Map Outline"
-                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] pointer-events-none select-none"
+                  loading="eager"
+                  decoding="async"
+                  crossorigin="anonymous"
                   referrerpolicy="no-referrer"
                 />
               </div>
 
               <!-- Flag (Below Shape) -->
-              <div class="mt-3.5 mb-2">
+              <div class="mt-2.5 sm:mt-3.5 mb-1.5 sm:mb-2">
                 <img
                   id="flag-a"
                   src="https://flagcdn.com/w160/jp.png"
                   alt="Japan Flag"
-                  class="w-16 sm:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  class="w-14 sm:w-18 md:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105 pointer-events-none select-none"
+                  loading="eager"
+                  decoding="async"
+                  crossorigin="anonymous"
                   referrerpolicy="no-referrer"
                 />
               </div>
 
               <!-- Country Name (Below Flag) -->
-              <h2 id="name-a" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              <h2 id="name-a" class="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
                 Japan
               </h2>
             </div>
 
             <!-- Revealed Stat Box -->
-            <div class="mt-4 mb-6 text-center">
+            <div class="mt-3 sm:mt-4 mb-4 sm:mb-6 text-center">
               <div
                 id="value-a"
-                class="tabular-nums font-display text-4xl sm:text-5xl font-black text-emerald-400 tracking-tight"
+                class="tabular-nums font-display text-3xl sm:text-4xl md:text-5xl font-black text-emerald-400 tracking-tight"
               >
                 334
               </div>
-              <div id="unit-a" class="text-sm font-semibold text-slate-300 mt-1">
+              <div id="unit-a" class="text-xs sm:text-sm font-semibold text-slate-300 mt-0.5 sm:mt-1">
                 people/km²
               </div>
             </div>
 
             <!-- Bottom Context -->
-            <div class="text-center pt-3 border-t border-slate-800/80 text-xs text-slate-400">
+            <div class="text-center pt-2.5 sm:pt-3 border-t border-slate-800/80 text-[11px] sm:text-xs text-slate-400">
               <span id="rank-context-a">Reference Benchmark</span>
             </div>
           </div>
 
           <!-- Mobile VS Divider -->
-          <div class="flex md:hidden items-center justify-center -my-2 z-10">
-            <span class="px-3 py-1 bg-slate-900 border border-slate-700 text-slate-300 font-display font-black text-xs rounded-full shadow">
+          <div class="flex md:hidden items-center justify-center -my-1 z-10 pointer-events-none">
+            <span class="px-2.5 py-0.5 bg-slate-900 border border-slate-700 text-slate-300 font-display font-black text-[11px] rounded-full shadow">
               VS
             </span>
           </div>
@@ -321,73 +399,79 @@
           <!-- Right Card: Country B (Target Country) -->
           <div
             id="card-b"
-            class="card-gloss relative flex flex-col justify-between p-5 sm:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300"
+            class="card-gloss relative flex flex-col justify-between p-4 sm:p-6 md:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card"
           >
             <!-- Country Header: Shape (Top, Bigger) -> Flag (Below) -> Name (Below) -->
             <div class="flex flex-col items-center text-center">
               <!-- Country Map Shape (Top & Bigger) -->
-              <div class="w-full max-w-[270px] sm:max-w-[300px] h-36 sm:h-44 p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group">
+              <div class="w-full max-w-[240px] sm:max-w-[280px] md:max-w-[300px] h-28 sm:h-36 md:h-44 p-2.5 sm:p-3 bg-slate-800/60 rounded-2xl border border-slate-700/60 shadow-inner flex items-center justify-center relative overflow-hidden group landscape-compact-shape">
                 <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fbbf24_1px,transparent_1px)] [background-size:10px_10px]"></div>
                 <img
                   id="shape-b"
                   src="https://cdn.jsdelivr.net/gh/djaiss/mapsicon@master/all/fi/vector.svg"
                   alt="Finland Map Outline"
-                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)]"
+                  class="max-h-full max-w-full object-contain filter invert opacity-95 transition-transform duration-300 group-hover:scale-105 drop-shadow-[0_4px_10px_rgba(0,0,0,0.6)] pointer-events-none select-none"
+                  loading="eager"
+                  decoding="async"
+                  crossorigin="anonymous"
                   referrerpolicy="no-referrer"
                 />
               </div>
 
               <!-- Flag (Below Shape) -->
-              <div class="mt-3.5 mb-2">
+              <div class="mt-2.5 sm:mt-3.5 mb-1.5 sm:mb-2">
                 <img
                   id="flag-b"
                   src="https://flagcdn.com/w160/fi.png"
                   alt="Finland Flag"
-                  class="w-16 sm:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105"
+                  class="w-14 sm:w-18 md:w-20 h-auto aspect-[3/2] object-cover rounded-md flag-shadow border border-white/20 shadow-md transition-transform hover:scale-105 pointer-events-none select-none"
+                  loading="eager"
+                  decoding="async"
+                  crossorigin="anonymous"
                   referrerpolicy="no-referrer"
                 />
               </div>
 
               <!-- Country Name (Below Flag) -->
-              <h2 id="name-b" class="font-display text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-tight">
+              <h2 id="name-b" class="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight leading-tight">
                 Finland
               </h2>
             </div>
 
             <!-- Hidden / Counted Stat Box -->
-            <div class="my-4 text-center min-h-[90px] flex flex-col items-center justify-center">
+            <div class="my-3 sm:my-4 text-center min-h-[72px] sm:min-h-[90px] flex flex-col items-center justify-center">
               <div
                 id="value-b"
-                class="tabular-nums font-display text-4xl sm:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200"
+                class="tabular-nums font-display text-3xl sm:text-4xl md:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200"
               >
                 ???
               </div>
-              <div id="unit-b" class="text-sm font-semibold text-slate-300 mt-1">
+              <div id="unit-b" class="text-xs sm:text-sm font-semibold text-slate-300 mt-0.5 sm:mt-1">
                 people/km²
               </div>
               <div id="result-feedback" class="text-xs font-bold uppercase tracking-wider mt-1 h-4 transition-all opacity-0"></div>
             </div>
 
             <!-- Action Buttons: HIGHER / LOWER -->
-            <div id="guess-buttons" class="grid grid-cols-2 gap-3 pt-2">
+            <div id="guess-buttons" class="grid grid-cols-2 gap-2.5 sm:gap-3 pt-1 sm:pt-2 no-select">
               <button
                 id="btn-higher"
-                class="group relative flex items-center justify-center gap-2 py-3.5 px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/40 transition-all cursor-pointer"
+                class="group relative flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 sm:px-4 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.97] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-emerald-950/50 border border-emerald-400/40 transition-all cursor-pointer min-h-[48px] sm:min-h-[52px]"
               >
                 <span>HIGHER</span>
-                <span class="text-emerald-200 group-hover:-translate-y-0.5 transition-transform">▲</span>
+                <span class="text-emerald-200 group-hover:-translate-y-0.5 transition-transform" aria-hidden="true">▲</span>
               </button>
               <button
                 id="btn-lower"
-                class="group relative flex items-center justify-center gap-2 py-3.5 px-4 bg-rose-600 hover:bg-rose-500 active:scale-[0.98] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-rose-950/50 border border-rose-400/40 transition-all cursor-pointer"
+                class="group relative flex items-center justify-center gap-2 py-3 sm:py-3.5 px-3 sm:px-4 bg-rose-600 hover:bg-rose-500 active:scale-[0.97] text-white font-display font-extrabold text-base sm:text-lg rounded-xl shadow-lg shadow-rose-950/50 border border-rose-400/40 transition-all cursor-pointer min-h-[48px] sm:min-h-[52px]"
               >
                 <span>LOWER</span>
-                <span class="text-rose-200 group-hover:translate-y-0.5 transition-transform">▼</span>
+                <span class="text-rose-200 group-hover:translate-y-0.5 transition-transform" aria-hidden="true">▼</span>
               </button>
             </div>
 
             <!-- Bottom Subtext / Keyboard Hint -->
-            <div class="text-center pt-3 border-t border-slate-800/80 text-xs text-slate-400 flex items-center justify-center gap-2">
+            <div class="text-center pt-2.5 sm:pt-3 border-t border-slate-800/80 text-[11px] sm:text-xs text-slate-400 flex items-center justify-center gap-2">
               <span>Than <span id="comparison-country-name" class="font-bold text-slate-200">Japan</span>?</span>
               <span class="hidden sm:inline text-slate-600">|</span>
               <span class="hidden sm:inline text-slate-500 text-[11px]">Use [▲ / ▼] keys</span>
@@ -510,13 +594,13 @@
         </div>
 
         <!-- Action Buttons (Share / Practice / Play Endless) -->
-        <div class="w-full max-w-md flex flex-col gap-2.5 mb-5">
+        <div class="w-full max-w-md flex flex-col gap-2.5 mb-3">
           <button
             id="btn-daily-share"
             class="w-full py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 active:scale-[0.98] text-white font-display font-extrabold text-sm rounded-xl shadow-lg border border-emerald-400/40 transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            <span>Share Daily Result</span>
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            <span id="btn-daily-share-text">Share Daily Result</span>
+            <svg id="btn-daily-share-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
           </button>
           <div class="grid grid-cols-2 gap-2.5">
             <button
@@ -536,9 +620,25 @@
           </div>
         </div>
 
-        <!-- Share Toast -->
-        <div id="daily-share-toast" class="h-5 -mt-3 mb-4 text-xs font-semibold text-emerald-400 opacity-0 transition-opacity">
-          Copied Daily Challenge result to clipboard! 📋
+        <!-- Share Toast Feedback -->
+        <div
+          id="daily-share-toast"
+          class="w-full max-w-md py-2 px-3.5 mb-3 rounded-xl bg-emerald-950/90 border border-emerald-500/50 text-xs font-bold text-emerald-300 text-center flex items-center justify-center gap-2 shadow-lg transition-all duration-300 opacity-0 pointer-events-none"
+        >
+          <span class="text-sm">📋</span>
+          <span id="daily-share-toast-msg">Copied Daily Challenge result to clipboard! Ready to share.</span>
+        </div>
+
+        <!-- Fallback Share Textarea (Visible if browser or iframe blocks clipboard write) -->
+        <div id="daily-share-fallback-box" class="hidden w-full max-w-md p-3.5 mb-4 rounded-2xl bg-slate-800/90 border border-sky-500/50 flex-col gap-2 animate-pop">
+          <div class="flex items-center justify-between text-xs font-bold text-sky-300">
+            <span>Copy & Share Your Result:</span>
+            <button id="btn-close-share-fallback" type="button" class="text-slate-400 hover:text-white cursor-pointer px-1">✕</button>
+          </div>
+          <textarea id="daily-share-fallback-text" rows="4" readonly class="w-full p-2.5 bg-slate-950 rounded-lg text-xs font-mono text-slate-200 border border-slate-700 select-all resize-none focus:outline-none focus:border-sky-400"></textarea>
+          <button id="btn-select-fallback-text" type="button" class="py-2 px-3 bg-sky-600 hover:bg-sky-500 text-white font-bold text-xs rounded-lg transition-all cursor-pointer">
+            Select All Text to Copy
+          </button>
         </div>
 
         <!-- Detailed 5-matchup line-by-line breakdown -->
@@ -572,7 +672,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="w-full py-4 border-t border-slate-800/80 bg-slate-900/50 text-center text-xs text-slate-500">
+    <footer class="w-full py-4 border-t border-slate-800/80 bg-slate-900/50 text-center text-xs text-slate-500 pb-safe px-safe">
       <div class="max-w-5xl mx-auto px-4 flex items-center justify-center">
         <span>Real-world data sourced from UN, World Bank, UNESCO, Ookla & Olympic Records</span>
       </div>
@@ -931,6 +1031,7 @@
       const todayDateKey = getDailyDateKey();
       let dailyMatchups = generateDailyMatchups(todayDateKey);
       let dailyChoices = loadSavedDailyChoices(); // Array of 'higher' or 'lower' strings
+      let lastDailyScore = 0;
 
       // DOM Elements - Navigation & Modes
       const tabEndless = document.getElementById("tab-endless");
@@ -949,6 +1050,9 @@
       const dailyProgressBlocks = document.getElementById("daily-progress-blocks");
       const dailyDateLabel = document.getElementById("daily-date-label");
       const dailyRoundLabel = document.getElementById("daily-round-label");
+      if (dailyDateLabel) {
+        dailyDateLabel.textContent = formatEnglishDate();
+      }
 
       // DOM Elements - Country Cards
       const cardA = document.getElementById("card-a");
@@ -1137,6 +1241,11 @@
         const now = new Date();
         const diffDays = Math.floor((now - epoch) / (1000 * 60 * 60 * 24)) + 1;
         return Math.max(1, diffDays);
+      }
+
+      function formatEnglishDate(d = new Date()) {
+        const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+        return `${months[d.getMonth()]} ${d.getDate()}, ${d.getFullYear()}`;
       }
 
       function createSeededRandom(seedStr) {
@@ -1538,12 +1647,27 @@
       }
 
       function fallbackShare(text) {
-        const temp = document.createElement("textarea");
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        document.body.removeChild(temp);
+        try {
+          const temp = document.createElement("textarea");
+          temp.value = text;
+          temp.style.position = "fixed";
+          temp.style.top = "0";
+          temp.style.left = "-9999px";
+          temp.style.width = "2em";
+          temp.style.height = "2em";
+          temp.style.padding = "0";
+          temp.style.border = "none";
+          temp.style.outline = "none";
+          temp.style.boxShadow = "none";
+          temp.style.background = "transparent";
+          temp.setAttribute("readonly", "");
+          document.body.appendChild(temp);
+          temp.focus();
+          temp.select();
+          temp.setSelectionRange(0, 999999);
+          document.execCommand("copy");
+          document.body.removeChild(temp);
+        } catch (e) {}
         shareToast.classList.remove("opacity-0");
         shareToast.classList.add("opacity-100");
         setTimeout(() => {
@@ -1575,7 +1699,7 @@
 
         // Date and round headers
         const todayDate = new Date();
-        dailyDateLabel.textContent = todayDate.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        dailyDateLabel.textContent = formatEnglishDate(todayDate);
         dailyRoundLabel.textContent = `Question ${currentIdx + 1} of ${DAILY_ROUNDS}`;
         dailyHeaderLabel.textContent = `Round ${currentIdx + 1}/${DAILY_ROUNDS}`;
 
@@ -1796,9 +1920,10 @@
         dailyGridEmoji.textContent = gridStr;
 
         const challengeNum = getDailyChallengeNumber();
-        const dateFormatted = new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
+        const dateFormatted = formatEnglishDate();
         dailyScorecardSubtitle.textContent = `${dateFormatted} · Challenge #${challengeNum} (5 Questions)`;
         dailyRankFeedback.textContent = "Tallying results...";
+        lastDailyScore = score;
 
         // Animate score number rolling up rapidly with satisfying chimes on each step
         animateCounter(dailyFinalScore, score, 750, (currentScore) => {
@@ -1830,41 +1955,154 @@
         });
       }
 
+      let dailyShareToastTimeout = null;
+
       function shareDailyResult() {
         const challengeNum = getDailyChallengeNumber();
-        const dateFormatted = new Date().toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" });
-        const score = dailyFinalScore.textContent;
-        trackEvent("share_result", { mode: "daily", score });
-        const gridStr = dailyGridEmoji.textContent.trim();
-        const text = `🌍 Country Stat Battles | Daily #${challengeNum} (${dateFormatted})\nScore: ${score} / ${DAILY_ROUNDS}\n${gridStr}\nCan you beat my score? ${window.location.href}`;
+        const dateFormatted = formatEnglishDate();
+        
+        // Calculate true score from matchups
+        let score = 0;
+        dailyMatchups.forEach((m, idx) => {
+          const choice = dailyChoices[idx] || "higher";
+          const valA = m.countryA[m.catKey];
+          const valB = m.countryB[m.catKey];
+          const isHigher = valB >= valA;
+          const isLower = valB <= valA;
+          if ((choice === "higher" && isHigher) || (choice === "lower" && isLower)) {
+            score++;
+          }
+        });
 
-        if (navigator.clipboard && navigator.clipboard.writeText) {
-          navigator.clipboard.writeText(text).then(() => {
-            dailyShareToast.classList.remove("opacity-0");
-            dailyShareToast.classList.add("opacity-100");
-            setTimeout(() => {
-              dailyShareToast.classList.remove("opacity-100");
-              dailyShareToast.classList.add("opacity-0");
-            }, 3000);
-          }).catch(() => fallbackDailyShare(text));
+        const gridBlocks = dailyMatchups.map((m, idx) => {
+          const choice = dailyChoices[idx] || "higher";
+          const valA = m.countryA[m.catKey];
+          const valB = m.countryB[m.catKey];
+          const isHigher = valB >= valA;
+          const isLower = valB <= valA;
+          return ((choice === "higher" && isHigher) || (choice === "lower" && isLower)) ? "🟩" : "🟥";
+        });
+        const gridStr = gridBlocks.join("");
+
+        let shareUrl = window.location.href;
+        try {
+          const u = new URL(window.location.href);
+          u.search = "";
+          u.hash = "";
+          shareUrl = u.toString();
+        } catch (e) {}
+
+        const text = `🌍 Country Stat Battles | Daily #${challengeNum} (${dateFormatted})\nScore: ${score} / ${DAILY_ROUNDS}\n${gridStr}\nCan you beat my score? ${shareUrl}`;
+
+        trackEvent("share_result", { mode: "daily", score });
+
+        // If Web Share API is available (especially on iOS / Android mobile)
+        if (navigator.share) {
+          navigator.share({
+            title: "Country Stat Battles",
+            text: text
+          }).then(() => {
+            showDailyShareFeedback("Shared successfully! 🎉");
+          }).catch((err) => {
+            if (err.name !== "AbortError") {
+              copyDailyResultText(text);
+            }
+          });
+          return;
+        }
+
+        copyDailyResultText(text);
+      }
+
+      function copyDailyResultText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(text)
+            .then(() => {
+              showDailyShareFeedback("Copied to clipboard! Ready to share. 📋");
+            })
+            .catch(() => {
+              fallbackDailyCopy(text);
+            });
+          return;
+        }
+        fallbackDailyCopy(text);
+      }
+
+      function fallbackDailyCopy(text) {
+        let copied = false;
+        try {
+          const temp = document.createElement("textarea");
+          temp.value = text;
+          temp.style.position = "fixed";
+          temp.style.top = "0";
+          temp.style.left = "-9999px";
+          temp.style.width = "2em";
+          temp.style.height = "2em";
+          temp.style.padding = "0";
+          temp.style.border = "none";
+          temp.style.outline = "none";
+          temp.style.boxShadow = "none";
+          temp.style.background = "transparent";
+          temp.setAttribute("readonly", "");
+          document.body.appendChild(temp);
+          temp.focus();
+          temp.select();
+          temp.setSelectionRange(0, 999999);
+          copied = document.execCommand("copy");
+          document.body.removeChild(temp);
+        } catch (e) {
+          copied = false;
+        }
+
+        if (copied) {
+          showDailyShareFeedback("Copied to clipboard! Ready to share. 📋");
         } else {
-          fallbackDailyShare(text);
+          showDailyShareFallbackBox(text);
         }
       }
 
-      function fallbackDailyShare(text) {
-        const temp = document.createElement("textarea");
-        temp.value = text;
-        document.body.appendChild(temp);
-        temp.select();
-        document.execCommand("copy");
-        document.body.removeChild(temp);
-        dailyShareToast.classList.remove("opacity-0");
+      function showDailyShareFeedback(msg) {
+        sfx.init();
+        sfx.chime(1.4);
+
+        const shareBtn = document.getElementById("btn-daily-share");
+        const shareBtnText = document.getElementById("btn-daily-share-text");
+        if (shareBtnText) shareBtnText.textContent = "✓ Copied to Clipboard!";
+        if (shareBtn) {
+          shareBtn.classList.remove("bg-emerald-600", "hover:bg-emerald-500");
+          shareBtn.classList.add("bg-emerald-500", "ring-2", "ring-emerald-300");
+        }
+
+        const toastMsg = document.getElementById("daily-share-toast-msg");
+        if (toastMsg) toastMsg.textContent = msg;
+        dailyShareToast.classList.remove("opacity-0", "pointer-events-none");
         dailyShareToast.classList.add("opacity-100");
-        setTimeout(() => {
+
+        const fallbackBox = document.getElementById("daily-share-fallback-box");
+        if (fallbackBox) fallbackBox.classList.add("hidden");
+
+        if (dailyShareToastTimeout) clearTimeout(dailyShareToastTimeout);
+        dailyShareToastTimeout = setTimeout(() => {
+          if (shareBtnText) shareBtnText.textContent = "Share Daily Result";
+          if (shareBtn) {
+            shareBtn.classList.remove("bg-emerald-500", "ring-2", "ring-emerald-300");
+            shareBtn.classList.add("bg-emerald-600", "hover:bg-emerald-500");
+          }
           dailyShareToast.classList.remove("opacity-100");
-          dailyShareToast.classList.add("opacity-0");
+          dailyShareToast.classList.add("opacity-0", "pointer-events-none");
         }, 3000);
+      }
+
+      function showDailyShareFallbackBox(text) {
+        const fallbackBox = document.getElementById("daily-share-fallback-box");
+        const fallbackText = document.getElementById("daily-share-fallback-text");
+        if (fallbackBox && fallbackText) {
+          fallbackText.value = text;
+          fallbackBox.classList.remove("hidden");
+          fallbackBox.classList.add("flex");
+          fallbackText.focus();
+          fallbackText.select();
+        }
       }
 
       function retryDailyPractice() {
@@ -1924,6 +2162,31 @@
       if (btnDailyRetry) {
         btnDailyRetry.addEventListener("click", retryDailyPractice);
       }
+      const btnCloseShareFallback = document.getElementById("btn-close-share-fallback");
+      const btnSelectFallbackText = document.getElementById("btn-select-fallback-text");
+      if (btnCloseShareFallback) {
+        btnCloseShareFallback.addEventListener("click", () => {
+          const fallbackBox = document.getElementById("daily-share-fallback-box");
+          if (fallbackBox) {
+            fallbackBox.classList.remove("flex");
+            fallbackBox.classList.add("hidden");
+          }
+        });
+      }
+      if (btnSelectFallbackText) {
+        btnSelectFallbackText.addEventListener("click", () => {
+          const fallbackText = document.getElementById("daily-share-fallback-text");
+          if (fallbackText) {
+            fallbackText.focus();
+            fallbackText.select();
+            fallbackText.setSelectionRange(0, 999999);
+            try {
+              document.execCommand("copy");
+              showDailyShareFeedback("Copied to clipboard! 📋");
+            } catch (e) {}
+          }
+        });
+      }
 
       // Sound Toggle
       soundToggleBtn.addEventListener("click", () => {
@@ -1963,6 +2226,19 @@
           }
         }
       });
+
+      // Cross-platform WebAudio unlock on first user gesture (critical for iOS Safari)
+      const unlockAudio = () => {
+        if (sfx.ctx && sfx.ctx.state === "suspended") {
+          sfx.ctx.resume().catch(() => {});
+        } else if (!sfx.ctx) {
+          sfx.init();
+        }
+        window.removeEventListener("pointerdown", unlockAudio);
+        window.removeEventListener("touchstart", unlockAudio);
+      };
+      window.addEventListener("pointerdown", unlockAudio, { passive: true, once: true });
+      window.addEventListener("touchstart", unlockAudio, { passive: true, once: true });
 
       // Start initial game in Daily Mode as the flagship primary feature
       switchMode("daily");
