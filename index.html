@@ -6,10 +6,10 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"
     />
-    <title>Statle – STAt batTLE</title>
+    <title>Statle — Daily Country Stat Battles</title>
     <meta
       name="description"
-      content="Play Statle (STAt batTLE)! Guess whether countries have higher or lower real-world statistics in this daily world geography challenge."
+      content="Play Statle — Daily Country Stat Battles! Guess whether countries have higher or lower real-world statistics in this 5-question daily challenge."
     />
     <meta name="theme-color" content="#0b1120" />
     <meta name="color-scheme" content="dark" />
@@ -18,17 +18,18 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
     <meta name="apple-mobile-web-app-title" content="Statle" />
     <meta name="format-detection" content="telephone=no" />
-    <meta property="og:title" content="Statle – STAt batTLE" />
+    <meta property="og:site_name" content="Statle.app" />
+    <meta property="og:title" content="Statle.app — Daily Country Stat Battles" />
     <meta
       property="og:description"
-      content="Play Statle (STAt batTLE)! A Higher/Lower guessing game comparing real-world statistics between countries. Can you build an unbeatable streak?"
+      content="Play Statle — Daily Country Stat Battles! A Higher/Lower guessing game comparing real-world statistics between countries. Can you build an unbeatable streak?"
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Statle – STAt batTLE" />
+    <meta name="twitter:title" content="Statle.app — Daily Country Stat Battles" />
     <meta
       name="twitter:description"
-      content="Play Statle (STAt batTLE)! Guess whether countries have higher or lower statistics in the 5-question daily challenge."
+      content="Play Statle — Daily Country Stat Battles! Guess whether countries have higher or lower statistics in the 5-question daily challenge."
     />
 
     <!-- Schema.org WebApplication JSON-LD -->
@@ -37,10 +38,10 @@
         "@context": "https://schema.org",
         "@type": "WebApplication",
         "name": "Statle",
-        "alternateName": "STAt batTLE",
+        "alternateName": "Daily Country Stat Battles",
         "applicationCategory": "GameApplication",
         "operatingSystem": "All",
-        "description": "Statle (STAt batTLE) is a higher or lower guessing game comparing real-world country statistics including population density and coffee consumption.",
+        "description": "Statle is a higher or lower guessing game comparing real-world country statistics including population density and coffee consumption.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -226,15 +227,15 @@
     <!-- Header -->
     <header class="w-full border-b border-slate-800/80 bg-slate-900/80 backdrop-blur-md sticky top-0 z-30 pt-safe px-safe">
       <div class="max-w-5xl mx-auto px-2 sm:px-6 min-h-[3.75rem] h-auto py-2 sm:h-16 sm:py-0 flex items-center justify-between gap-2 sm:gap-4 flex-wrap sm:flex-nowrap">
-        <!-- Brand -->
+        <!-- Brand (Clean, punchy 2-line header) -->
         <div class="flex items-center gap-2">
           <span class="text-xl sm:text-2xl" aria-hidden="true">🌍</span>
           <div class="flex flex-col">
-            <h1 class="font-display font-extrabold text-base sm:text-xl tracking-tight text-white leading-none whitespace-nowrap">
-              Statle
+            <h1 class="font-display font-black text-base sm:text-xl tracking-tight text-white leading-none whitespace-nowrap">
+              STATLE
             </h1>
-            <p class="text-[10px] sm:text-[11px] font-bold text-emerald-400 tracking-wider font-mono mt-0.5 leading-tight">
-              STAt batTLE
+            <p class="text-[9px] sm:text-[10px] font-bold text-emerald-400 tracking-wider font-mono mt-0.5 leading-tight uppercase whitespace-nowrap">
+              DAILY STAT BATTLES
             </p>
           </div>
         </div>
@@ -1980,7 +1981,7 @@
         // If Web Share API is available (especially on iOS / Android mobile)
         if (navigator.share) {
           navigator.share({
-            title: "Statle – STAt batTLE",
+            title: "Statle — Daily Country Stat Battles",
             text: text
           }).then(() => {
             showDailyShareFeedback("Shared successfully! 🎉");
