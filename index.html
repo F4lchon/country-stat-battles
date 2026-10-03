@@ -6,29 +6,29 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover"
     />
-    <title>Country Stat Battles – Higher or Lower World Stats Game</title>
+    <title>Statle – STAt batTLE</title>
     <meta
       name="description"
-      content="Test your geography knowledge in Country Stat Battles! Guess whether countries have higher or lower population density, coffee consumption, and more."
+      content="Play Statle (STAt batTLE)! Guess whether countries have higher or lower real-world statistics in this daily world geography challenge."
     />
     <meta name="theme-color" content="#0b1120" />
     <meta name="color-scheme" content="dark" />
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Country Stats" />
+    <meta name="apple-mobile-web-app-title" content="Statle" />
     <meta name="format-detection" content="telephone=no" />
-    <meta property="og:title" content="Country Stat Battles – Higher or Lower World Stats Game" />
+    <meta property="og:title" content="Statle – STAt batTLE" />
     <meta
       property="og:description"
-      content="A Higher/Lower guessing game comparing real-world statistics between countries. Can you build an unbeatable streak?"
+      content="Play Statle (STAt batTLE)! A Higher/Lower guessing game comparing real-world statistics between countries. Can you build an unbeatable streak?"
     />
     <meta property="og:type" content="website" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Country Stat Battles" />
+    <meta name="twitter:title" content="Statle – STAt batTLE" />
     <meta
       name="twitter:description"
-      content="Test your geography knowledge! Guess whether countries have higher or lower statistics."
+      content="Play Statle (STAt batTLE)! Guess whether countries have higher or lower statistics in the 5-question daily challenge."
     />
 
     <!-- Schema.org WebApplication JSON-LD -->
@@ -36,10 +36,11 @@
       {
         "@context": "https://schema.org",
         "@type": "WebApplication",
-        "name": "Country Stat Battles",
+        "name": "Statle",
+        "alternateName": "STAt batTLE",
         "applicationCategory": "GameApplication",
         "operatingSystem": "All",
-        "description": "A higher or lower guessing game comparing real-world country statistics including population density and coffee consumption.",
+        "description": "Statle (STAt batTLE) is a higher or lower guessing game comparing real-world country statistics including population density and coffee consumption.",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -228,11 +229,16 @@
         <!-- Brand -->
         <div class="flex items-center gap-2">
           <span class="text-xl sm:text-2xl" aria-hidden="true">🌍</span>
-          <div>
-            <h1 class="font-display font-extrabold text-base sm:text-xl tracking-tight text-white leading-none whitespace-nowrap">
-              Country Stat Battles
-            </h1>
-            <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden sm:block tracking-wide">
+          <div class="flex flex-col">
+            <div class="flex items-baseline gap-1.5 sm:gap-2">
+              <h1 class="font-display font-extrabold text-base sm:text-xl tracking-tight text-white leading-none whitespace-nowrap">
+                Statle
+              </h1>
+              <span class="text-[10px] sm:text-xs font-bold text-emerald-400 tracking-wide font-mono bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-800/50 shadow-inner">
+                STAt batTLE
+              </span>
+            </div>
+            <p class="text-[10px] sm:text-[11px] text-slate-400 font-medium hidden sm:block tracking-wide mt-0.5">
               Higher or Lower Country Stats
             </p>
           </div>
@@ -661,7 +667,7 @@
     <!-- JavaScript Game Logic -->
     <script>
       /**
-       * COUNTRY STAT BATTLES - Single-file Engine
+       * STATLE (STAt batTLE) - Single-file Engine
        * Embedded real-world dataset of 45+ countries.
        */
       const COUNTRIES = [
@@ -1610,7 +1616,7 @@
       function shareResult() {
         trackEvent("share_result", { mode: "endless", streak });
         const blocks = roundHistory.map(res => res === "correct" ? "🟩" : "🟥").join("");
-        const text = `🌍 Country Stat Battles | I reached a streak of ${streak}! (Best: ${highScore})\n${blocks}\nCan you beat my score? ${window.location.href}`;
+        const text = `🌍 Statle (STAt batTLE) | I reached a streak of ${streak}! (Best: ${highScore})\n${blocks}\nCan you beat my score? ${window.location.href}`;
 
         if (navigator.clipboard && navigator.clipboard.writeText) {
           navigator.clipboard.writeText(text).then(() => {
@@ -1972,14 +1978,14 @@
           shareUrl = u.toString();
         } catch (e) {}
 
-        const text = `🌍 Country Stat Battles | Daily #${challengeNum} (${dateFormatted})\nScore: ${score} / ${DAILY_ROUNDS}\n${gridStr}\nCan you beat my score? ${shareUrl}`;
+        const text = `🌍 Statle #${challengeNum} (${dateFormatted})\nScore: ${score} / ${DAILY_ROUNDS}\n${gridStr}\nCan you beat my score? ${shareUrl}`;
 
         trackEvent("share_result", { mode: "daily", score });
 
         // If Web Share API is available (especially on iOS / Android mobile)
         if (navigator.share) {
           navigator.share({
-            title: "Country Stat Battles",
+            title: "Statle – STAt batTLE",
             text: text
           }).then(() => {
             showDailyShareFeedback("Shared successfully! 🎉");
