@@ -853,6 +853,35 @@
         }
       };
 
+      /**
+       * PROGRESSIVE DIFFICULTY ENGINE (DAILY CHALLENGE)
+       * Round Difficulty Thresholds:
+       * - Round 1: between 150 and 200%
+       * - Round 2: between 100 and 150%
+       * - Round 3: between 65 and 100%
+       * - Round 4: between 30 and 65%
+       * - Round 5: between 0 and 30%
+       */
+      const DAILY_DIFFICULTY_TIERS = [
+        { round: 1, name: "Warm-up", icon: "🌱", minDiffPct: 150, maxDiffPct: 200 },
+        { round: 2, name: "Moderate", icon: "⚖️", minDiffPct: 100, maxDiffPct: 150 },
+        { round: 3, name: "Challenging", icon: "🔥", minDiffPct: 65, maxDiffPct: 100 },
+        { round: 4, name: "Hard", icon: "⚡", minDiffPct: 30, maxDiffPct: 65 },
+        { round: 5, name: "Final Boss", icon: "👑", minDiffPct: 0, maxDiffPct: 30 }
+      ];
+
+      /**
+       * Dynamic Percentage Difference Formula:
+       * diffPct = (Math.abs(valA - valB) / Math.min(valA, valB)) * 100
+       */
+      function calculateDiffPct(valA, valB) {
+        const minVal = Math.min(valA, valB);
+        if (minVal <= 0) {
+          return valA === valB ? 0 : 999999;
+        }
+        return (Math.abs(valA - valB) / minVal) * 100;
+      }
+
       // Sound FX Synthesizer using Web Audio API
       class SoundFX {
         constructor() {
@@ -1010,7 +1039,9 @@
       let roundHistory = []; // For Endless Wordle share blocks: 'correct' or 'incorrect'
 
       // Daily Challenge State (5 Questions)
+      const DAILY_EDITION = "remake-1"; // Incremented when today's daily challenge is remade
       const todayDateKey = getDailyDateKey();
+      const dailyStorageKey = `${todayDateKey}_${DAILY_EDITION}`;
       let dailyMatchups = generateDailyMatchups(todayDateKey);
       let dailyChoices = loadSavedDailyChoices(); // Array of 'higher' or 'lower' strings
       let lastDailyScore = 0;
@@ -1245,57 +1276,121 @@
       }
 
       function generateDailyMatchups(dateKey) {
-        const rng = createSeededRandom("csb-daily-" + dateKey);
-        const catKeys = Object.keys(CATEGORIES);
+        const rng = createSeededRandom("csb-daily-" + DAILY_EDITION + "-" + dateKey);
+        const allCatKeys = Object.keys(CATEGORIES);
         // Deterministically shuffle categories
-        for (let i = catKeys.length - 1; i > 0; i--) {
+        const shuffledCats = [...allCatKeys];
+        for (let i = shuffledCats.length - 1; i > 0; i--) {
           const j = Math.floor(rng() * (i + 1));
-          [catKeys[i], catKeys[j]] = [catKeys[j], catKeys[i]];
+          [shuffledCats[i], shuffledCats[j]] = [shuffledCats[j], shuffledCats[i]];
         }
         const matchups = [];
         const usedCountryCodes = new Set();
+        const usedCatKeys = new Set();
 
         for (let i = 0; i < DAILY_ROUNDS; i++) {
-          const catKey = catKeys[i % catKeys.length];
+          const tier = DAILY_DIFFICULTY_TIERS[i] || DAILY_DIFFICULTY_TIERS[DAILY_DIFFICULTY_TIERS.length - 1];
 
           // Filter out countries already used in today's daily challenge
           const availableCountries = COUNTRIES.filter(c => !usedCountryCodes.has(c.code));
 
-          // Pick countryA from available pool
-          const indexA = Math.floor(rng() * availableCountries.length);
-          const countryA = availableCountries[indexA];
+          // Pick a category that has country pairs within [tier.minDiffPct, tier.maxDiffPct]
+          const matchingCats = shuffledCats.filter(k => !usedCatKeys.has(k)).filter(k => {
+            return availableCountries.some(cA => {
+              return availableCountries.some(cB => {
+                if (cB.code === cA.code || cB[k] === cA[k]) return false;
+                const diff = calculateDiffPct(cA[k], cB[k]);
+                return diff >= tier.minDiffPct && diff <= tier.maxDiffPct;
+              });
+            });
+          });
 
-          // Pick countryB from available pool excluding countryA, where stats are not equal
+          const catKey = matchingCats.length > 0 
+            ? matchingCats[0] 
+            : shuffledCats.find(k => !usedCatKeys.has(k)) || shuffledCats[i % shuffledCats.length];
+          usedCatKeys.add(catKey);
+
+          // Candidates for Country A: countries that have candidate matches in the target bracket
+          const candidatesForA = availableCountries.filter(cA => {
+            return availableCountries.some(cB => {
+              if (cB.code === cA.code || cB[catKey] === cA[catKey]) return false;
+              const diff = calculateDiffPct(cA[catKey], cB[catKey]);
+              return diff >= tier.minDiffPct && diff <= tier.maxDiffPct;
+            });
+          });
+
+          const poolA = candidatesForA.length > 0 ? candidatesForA : availableCountries;
+          const indexA = Math.floor(rng() * poolA.length);
+          const countryA = poolA[indexA];
+
+          // Filter country pool for valid candidate matches excluding countryA, where stats are not equal
           const validCandidatesB = availableCountries.filter(
             c => c.code !== countryA.code && c[catKey] !== countryA[catKey]
           );
 
+          let curMin = tier.minDiffPct;
+          let curMax = tier.maxDiffPct;
+          let matchingCandidates = validCandidatesB.filter(c => {
+            const diff = calculateDiffPct(countryA[catKey], c[catKey]);
+            return diff >= curMin && diff <= curMax;
+          });
+
+          // Fallback Logic:
+          // If no candidate (or fewer than 3) exists in the exact bracket for rare metrics,
+          // gracefully widen the search range in gentle 5% increments until at least 3 candidates are found.
+          const maxTargetCandidates = Math.min(3, validCandidatesB.length);
+          let attempts = 0;
+          while (matchingCandidates.length < maxTargetCandidates && (curMin > 0 || curMax < 10000) && attempts < 200) {
+            curMin = Math.max(0, curMin - 5);
+            curMax += 5;
+            matchingCandidates = validCandidatesB.filter(c => {
+              const diff = calculateDiffPct(countryA[catKey], c[catKey]);
+              return diff >= curMin && diff <= curMax;
+            });
+            attempts++;
+          }
+
           let countryB;
-          if (validCandidatesB.length > 0) {
-            const indexB = Math.floor(rng() * validCandidatesB.length);
-            countryB = validCandidatesB[indexB];
+          if (matchingCandidates.length > 0) {
+            const indexB = Math.floor(rng() * matchingCandidates.length);
+            countryB = matchingCandidates[indexB];
+          } else if (validCandidatesB.length > 0) {
+            // First fallback: any candidate with different stat value
+            countryB = validCandidatesB[Math.floor(rng() * validCandidatesB.length)];
           } else {
-            // Fallback if all remaining countries have identical stat values
-            const fallbackPool = availableCountries.filter(c => c.code !== countryA.code);
+            // Second fallback: any country in pool excluding countryA
+            const fallbackPool = COUNTRIES.filter(c => c.code !== countryA.code);
             countryB = fallbackPool[Math.floor(rng() * fallbackPool.length)];
+          }
+
+          // Ultimate safety check: ensure countryB is defined and distinct from countryA
+          if (!countryB || countryB.code === countryA.code) {
+            countryB = COUNTRIES.find(c => c.code !== countryA.code) || COUNTRIES[0];
           }
 
           // Mark both countries as used so no country appears more than once
           usedCountryCodes.add(countryA.code);
           usedCountryCodes.add(countryB.code);
 
+          const actualDiffPct = calculateDiffPct(countryA[catKey], countryB[catKey]);
+
           matchups.push({
             round: i + 1,
             catKey: catKey,
             countryA: countryA,
-            countryB: countryB
+            countryB: countryB,
+            tierName: tier.name,
+            tierIcon: tier.icon,
+            minDiffPct: tier.minDiffPct,
+            maxDiffPct: tier.maxDiffPct,
+            diffPct: actualDiffPct < 1000 ? Math.round(actualDiffPct) : ">999"
           });
         }
         return matchups;
       }
 
       function loadSavedDailyChoices() {
-        const saved = localStorage.getItem("csb_daily_completed_" + todayDateKey);
+        const saved = localStorage.getItem("csb_daily_completed_" + dailyStorageKey);
         if (saved) {
           try {
             const parsed = JSON.parse(saved).choices || [];
@@ -1304,7 +1399,7 @@
             return [];
           }
         }
-        const inProgress = localStorage.getItem("csb_daily_in_progress_" + todayDateKey);
+        const inProgress = localStorage.getItem("csb_daily_in_progress_" + dailyStorageKey);
         if (inProgress) {
           try {
             const parsed = JSON.parse(inProgress) || [];
@@ -1401,7 +1496,7 @@
           gameOverScreen.classList.add("hidden");
 
           // If daily challenge is complete for today, show scorecard
-          const isCompleted = localStorage.getItem("csb_daily_completed_" + todayDateKey) || dailyChoices.length >= DAILY_ROUNDS;
+          const isCompleted = localStorage.getItem("csb_daily_completed_" + dailyStorageKey) || dailyChoices.length >= DAILY_ROUNDS;
           if (isCompleted && dailyChoices.length >= DAILY_ROUNDS) {
             showDailyScorecard();
           } else {
@@ -1701,7 +1796,7 @@
         // Date and round headers
         const todayDate = new Date();
         dailyDateLabel.textContent = formatEnglishDate(todayDate);
-        dailyRoundLabel.textContent = `Question ${currentIdx + 1} of ${DAILY_ROUNDS}`;
+        dailyRoundLabel.textContent = `Q${currentIdx + 1}/5 · ${matchup.tierName || "Round " + (currentIdx + 1)}`;
         dailyHeaderLabel.textContent = `Round ${currentIdx + 1}/${DAILY_ROUNDS}`;
 
         renderDailyProgressBlocks();
@@ -1754,21 +1849,22 @@
 
         for (let i = 0; i < DAILY_ROUNDS; i++) {
           const block = document.createElement("div");
+          const tier = DAILY_DIFFICULTY_TIERS[i] || { name: `Round ${i + 1}`, minDiffPct: 0, maxDiffPct: 100 };
           if (i < currentIdx) {
             // Completed generic indicator (answers remain hidden)
             block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-sky-500 border border-sky-400 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-sm select-none transition-all";
             block.textContent = "✓";
-            block.title = `Question ${i + 1}: Answered`;
+            block.title = `Question ${i + 1}: ${tier.name} (Answered)`;
           } else if (i === currentIdx) {
             // Current active round
             block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-slate-800 border-2 border-sky-400 text-sky-300 font-extrabold text-xs sm:text-sm flex items-center justify-center ring-2 ring-sky-400/40 animate-pulse shadow-md select-none transition-all";
             block.textContent = `${i + 1}`;
-            block.title = `Question ${i + 1}: Active`;
+            block.title = `Question ${i + 1}: ${tier.name} (Active)`;
           } else {
             // Upcoming round
             block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-500 font-semibold text-xs sm:text-sm flex items-center justify-center select-none transition-all";
             block.textContent = `${i + 1}`;
-            block.title = `Question ${i + 1}`;
+            block.title = `Question ${i + 1}: ${tier.name}`;
           }
           dailyProgressBlocks.appendChild(block);
         }
@@ -1787,7 +1883,7 @@
 
         // Record player choice without revealing Country B stat
         dailyChoices.push(guessType);
-        localStorage.setItem("csb_daily_in_progress_" + todayDateKey, JSON.stringify(dailyChoices));
+        localStorage.setItem("csb_daily_in_progress_" + dailyStorageKey, JSON.stringify(dailyChoices));
 
         // Smooth quick transition between rounds (160ms)
         cardB.classList.add("opacity-60", "scale-[0.99]");
@@ -1804,13 +1900,13 @@
       }
 
       function completeDailyChallenge() {
-        localStorage.removeItem("csb_daily_in_progress_" + todayDateKey);
+        localStorage.removeItem("csb_daily_in_progress_" + dailyStorageKey);
         const resultData = {
           dateKey: todayDateKey,
           choices: dailyChoices,
           completedAt: new Date().toISOString()
         };
-        localStorage.setItem("csb_daily_completed_" + todayDateKey, JSON.stringify(resultData));
+        localStorage.setItem("csb_daily_completed_" + dailyStorageKey, JSON.stringify(resultData));
 
         // Dramatic drum roll building suspense on final reveal transition
         sfx.drumRoll(0.95);
@@ -1860,11 +1956,14 @@
 
           item.innerHTML = `
             <div class="flex-1 min-w-0">
-              <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+              <div class="flex items-center gap-1.5 sm:gap-2 mb-1.5 flex-wrap">
                 <span class="text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded-full ${
                   isCorrect ? "bg-emerald-900/60 text-emerald-300 border border-emerald-700/50" : "bg-rose-900/60 text-rose-300 border border-rose-700/50"
                 }">
-                  Round ${idx + 1}
+                  Round ${idx + 1} · ${m.tierName || "R" + (idx + 1)}
+                </span>
+                <span class="text-[10px] font-mono text-slate-300 bg-slate-800/80 px-1.5 py-0.5 rounded border border-slate-700/60">
+                  Difference: ${m.diffPct}%
                 </span>
                 <span class="text-xs font-semibold text-slate-300 flex items-center gap-1.5">
                   <span>${cat.icon}</span>
