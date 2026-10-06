@@ -1253,18 +1253,37 @@
           [catKeys[i], catKeys[j]] = [catKeys[j], catKeys[i]];
         }
         const matchups = [];
+        const usedCountryCodes = new Set();
+
         for (let i = 0; i < DAILY_ROUNDS; i++) {
           const catKey = catKeys[i % catKeys.length];
-          const countryA = COUNTRIES[Math.floor(rng() * COUNTRIES.length)];
-          let countryB;
-          let attempts = 0;
-          do {
-            countryB = COUNTRIES[Math.floor(rng() * COUNTRIES.length)];
-            attempts++;
-          } while (
-            (countryB.code === countryA.code || countryB[catKey] === countryA[catKey]) &&
-            attempts < 30
+
+          // Filter out countries already used in today's daily challenge
+          const availableCountries = COUNTRIES.filter(c => !usedCountryCodes.has(c.code));
+
+          // Pick countryA from available pool
+          const indexA = Math.floor(rng() * availableCountries.length);
+          const countryA = availableCountries[indexA];
+
+          // Pick countryB from available pool excluding countryA, where stats are not equal
+          const validCandidatesB = availableCountries.filter(
+            c => c.code !== countryA.code && c[catKey] !== countryA[catKey]
           );
+
+          let countryB;
+          if (validCandidatesB.length > 0) {
+            const indexB = Math.floor(rng() * validCandidatesB.length);
+            countryB = validCandidatesB[indexB];
+          } else {
+            // Fallback if all remaining countries have identical stat values
+            const fallbackPool = availableCountries.filter(c => c.code !== countryA.code);
+            countryB = fallbackPool[Math.floor(rng() * fallbackPool.length)];
+          }
+
+          // Mark both countries as used so no country appears more than once
+          usedCountryCodes.add(countryA.code);
+          usedCountryCodes.add(countryB.code);
+
           matchups.push({
             round: i + 1,
             catKey: catKey,
@@ -1711,16 +1730,16 @@
 
         nameB.textContent = countryB.name;
         valueB.textContent = "???";
-        valueB.className = "tabular-nums font-display text-2xl sm:text-4xl md:text-5xl font-black text-amber-300 tracking-tight transition-all duration-200";
+        valueB.className = "tabular-nums font-display text-xl sm:text-3xl md:text-4xl font-black text-amber-300 tracking-tight transition-all duration-200";
         unitB.textContent = activeCategory.unit;
         compCountryName.textContent = countryA.name;
 
         resultFeedback.textContent = "";
-        resultFeedback.className = "text-[10px] sm:text-xs font-bold uppercase tracking-wider mt-0.5 sm:mt-1 h-3.5 sm:h-4 transition-all opacity-0";
+        resultFeedback.className = "text-[9.5px] sm:text-xs font-bold uppercase tracking-wider mt-0.5 sm:mt-1 h-3.5 transition-all opacity-0";
 
         // Clean borders
-        cardA.className = "card-gloss relative flex flex-col justify-between p-3 sm:p-5 md:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card";
-        cardB.className = "card-gloss relative flex flex-col justify-between p-3 sm:p-5 md:p-7 rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card";
+        cardA.className = "card-gloss relative flex flex-col justify-between p-2.5 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card";
+        cardB.className = "card-gloss relative flex flex-col justify-between p-2.5 sm:p-4 md:p-6 rounded-xl sm:rounded-2xl border-2 border-slate-700/80 bg-slate-900/90 shadow-2xl transition-all duration-300 landscape-compact-card";
 
         btnHigher.disabled = false;
         btnLower.disabled = false;
@@ -1737,17 +1756,17 @@
           const block = document.createElement("div");
           if (i < currentIdx) {
             // Completed generic indicator (answers remain hidden)
-            block.className = "h-8 sm:h-9 rounded-lg bg-sky-500 border border-sky-400 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-sm select-none transition-all";
+            block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-sky-500 border border-sky-400 text-white font-black text-xs sm:text-sm flex items-center justify-center shadow-sm select-none transition-all";
             block.textContent = "✓";
             block.title = `Question ${i + 1}: Answered`;
           } else if (i === currentIdx) {
             // Current active round
-            block.className = "h-8 sm:h-9 rounded-lg bg-slate-800 border-2 border-sky-400 text-sky-300 font-extrabold text-xs sm:text-sm flex items-center justify-center ring-2 ring-sky-400/40 animate-pulse shadow-md select-none transition-all";
+            block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-slate-800 border-2 border-sky-400 text-sky-300 font-extrabold text-xs sm:text-sm flex items-center justify-center ring-2 ring-sky-400/40 animate-pulse shadow-md select-none transition-all";
             block.textContent = `${i + 1}`;
             block.title = `Question ${i + 1}: Active`;
           } else {
             // Upcoming round
-            block.className = "h-8 sm:h-9 rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-500 font-semibold text-xs sm:text-sm flex items-center justify-center select-none transition-all";
+            block.className = "h-7 sm:h-8 rounded-md sm:rounded-lg bg-slate-800/60 border border-slate-700/60 text-slate-500 font-semibold text-xs sm:text-sm flex items-center justify-center select-none transition-all";
             block.textContent = `${i + 1}`;
             block.title = `Question ${i + 1}`;
           }
